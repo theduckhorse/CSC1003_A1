@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char* FILENAME = "fertility_Diagnosis_Data_Group5_8.txt";
+#include "..\Header Files\semen.h"
+#include "..\Header Files\naive_bayes.h"
+
+//location of data file
+const char* kFileName = "fertility_Diagnosis_Data_Group5_8.txt";
 
 //define functions
 void ReadFile();
@@ -17,32 +21,34 @@ void ReadFile()
 {
     // Pointer to the file
     FILE *fp;
-    // Character variable to read the content of file
+    // variable to read the content of file
     char c;
 
     // Opening a file in r mode
-    fp= fopen (FILENAME, "r");
+    fp= fopen (kFileName, "r");
 
     // Check if file opened
     if(fp!=NULL)
     {
         printf("File opened successfully\n");
-        //break out from fuction?
     }
     else
     {
         printf("Error in opening file\n");
+        return;
     }
 
-     // Infinite loop –I have used break to come out of the loop
+     // loop to print all the lines in text file
      while(1)
      {
         c = fgetc(fp);
+        // breaks the loop at the end
         if(c==EOF)
             break;
         else
             printf("%c", c);
      }
+
      printf("File closed\n");
      fclose(fp);
 }
