@@ -7,7 +7,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}", "${fileDirname}\\semen.c",
+                "${file}", "${fileDirname}\\semen.c", "${fileDirname}\\naive_bayes.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

@@ -7,7 +7,7 @@
 int main()
 {
     printf("Group 8 Assignment 1\n");
-    ReadFile();
-    PrintData(1);
+    InitFile();
+    PrintData(0);
     return 0;
 }
