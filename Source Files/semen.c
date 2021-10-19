@@ -1,6 +1,10 @@
 #include "..\Header Files\semen.h"
-
+//#define FILE_NAME "fertility_Diagnosis_Data_Group5_8.txt"
 // Reads the .txt file and store in a 2D array
+
+float** semen_array;
+int s_row, s_col;
+
 void InitFile()
 {
     // Pointer to the file
@@ -20,7 +24,7 @@ void InitFile()
     int semen_diagnosis;
 
     // Opening a file in r mode
-    fp = fopen (FILE_NAME, "r");
+    fp = fopen ("fertility_Diagnosis_Data_Group5_8.txt", "r");
 
     // Check if file exist
     if(fp == NULL)

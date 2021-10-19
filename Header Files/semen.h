@@ -7,14 +7,14 @@
 #define FILE_NAME "fertility_Diagnosis_Data_Group5_8.txt"
 
 //dynamic array for semen data
-float** semen_array;
-int s_row, s_col;
+extern float** semen_array;
+extern int s_row, s_col;
 
 //define functions
 void InitFile();
 void PrintData(int line);
 
-struct Semen
+/*struct Semen
 {
     float season_of_analysis;
     float age_of_analysis;
@@ -25,6 +25,6 @@ struct Semen
     float frequency_of_alcohol_consumption;
     int smokin_habit;
     float number_of_hours_spent_sitting_per_day;
-};
+};*/
 
 #endif
