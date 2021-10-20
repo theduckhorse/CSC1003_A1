@@ -25,5 +25,5 @@ float Init_Probablity(float** semen)
     normal_probablity /= s_row;
     
     //right now its only total count
-    printf("\nap%f, np%f", altered_probablity, normal_probablity);
+    printf("\nap: %f, np: %f", altered_probablity, normal_probablity);
 }

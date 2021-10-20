@@ -1,10 +1,9 @@
 #include "..\Header Files\semen.h"
-//#define FILE_NAME "fertility_Diagnosis_Data_Group5_8.txt"
-// Reads the .txt file and store in a 2D array
 
 float** semen_array;
 int s_row, s_col;
 
+// Reads the .txt file and store in a 2D array
 void InitFile()
 {
     // Pointer to the file
@@ -24,7 +23,7 @@ void InitFile()
     int semen_diagnosis;
 
     // Opening a file in r mode
-    fp = fopen ("fertility_Diagnosis_Data_Group5_8.txt", "r");
+    fp = fopen (FILE_NAME, "r");
 
     // Check if file exist
     if(fp == NULL)
@@ -48,7 +47,7 @@ void InitFile()
     {
         semen_array[i] = malloc(sizeof(float) * s_col);
     }
-    printf("Size of semen_array: %llu\n", sizeof(semen_array) + sizeof(semen_array[0]) * s_row );
+    printf("Size of semen_array: %llu bytes\n", sizeof(semen_array) + sizeof(semen_array[0]) * s_row + sizeof(float) * s_row * s_col);
 
     // go back to start of file
     rewind(fp);
@@ -108,4 +107,16 @@ void PrintData(int line)
         (int)semen_array[line][7],
         semen_array[line][8],
         (int)semen_array[line][9]);
+}
+
+// Frees and dereference dynamic array
+void FreeArray()
+{
+    for(int i=0; i<s_row; ++i)
+    {
+        free(semen_array[i]);
+        semen_array[i] = NULL;
+    }
+    free(semen_array);
+    semen_array = NULL;
 }

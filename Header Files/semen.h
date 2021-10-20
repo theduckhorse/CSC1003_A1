@@ -13,6 +13,7 @@ extern int s_row, s_col;
 //define functions
 void InitFile();
 void PrintData(int line);
+void FreeArray();
 
 /*struct Semen
 {

@@ -2,10 +2,9 @@
 #include <stdlib.h>
 
 #include "..\Header Files\semen.h"
-//#include <..\Header Files\semen.h>
 #include "..\Header Files\naive_bayes.h"
 
-extern float** semen_array;
+//extern float** semen_array;
 
 int main()
 {
