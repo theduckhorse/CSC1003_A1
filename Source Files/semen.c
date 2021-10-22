@@ -1,7 +1,7 @@
 #include "..\Header Files\semen.h"
 
 float** semen_array;
-int s_row, s_col;
+int s_row, s_col; //s_row (Amount of data)
 
 // Reads the .txt file and store in a 2D array
 void InitFile()

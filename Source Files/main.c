@@ -3,6 +3,8 @@
 
 #include "..\Header Files\semen.h"
 #include "..\Header Files\naive_bayes.h"
+#include "semen.c"
+#include "naive_bayes.c"
 
 //extern float** semen_array;
 
