@@ -30,7 +30,7 @@ float Init_Probablity(float** semen)
     }
     altered_probablity /= s_row;
     normal_probablity /= s_row; 
-    printf("\nap: %f, np: %f", altered_probablity, normal_probablity);
+    printf("\nap: %f, np: %f\n", altered_probablity, normal_probablity);
 
     Prob_Season(); // Init probablity for Seasons
     Prob_Childish_Disease(); // Init probablity for Childish Disease
