@@ -6,6 +6,8 @@
 #define F_S_ALPHA 3; //Fever, Smoking aplhas
 #define ALCOHOL_ALPHA 5;
 
+#define M_PI 3.14159265358979323846
+
 extern float altered_probablity, normal_probablity;
 
 struct Probablity
@@ -37,16 +39,16 @@ extern struct Probablity normal;
 float Init_Probablity(float **semen);
 
 //takes in array | will output probality for input data
-float Probablity(float *semen, int alpha);
+//float Probablity(float *semen, int alpha);
 
-//calculate mean for guassisan distribution
-float Mean();
+//calculate mean for guassisan distribution | takes in which collumn to avg. 
+void Mean(int column, float mean[]);
 
-//calculate Std Dev for guassisan distribution
-float Standard_Deviation();
+//calculate Std Dev for guassisan distribution | takes in which collumn to avg. 
+void Standard_Deviation(int column, float mean[], float sd[]);
 
-//calculate probablity from normal 
-float Gaussian_Probablity();
+//calculate probablity of both age and sitting and return age * probablity
+float Gaussian_Probablity(float data[], struct Probablity probablity);
 
 //use (results*100)/total data to get scoring 
 //calculate the score for the naive bayes algo
