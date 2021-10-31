@@ -17,7 +17,7 @@ int main()
     
     InitFile();
     Init_Probablity(semen_array);
-    Plot_Graph();
+    // Plot_Graph();
     
     endT = clock();
     printf("\nElapsed Time: %f seconds\n", (double)(endT - startT) / CLOCKS_PER_SEC);

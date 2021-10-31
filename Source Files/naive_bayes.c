@@ -30,7 +30,8 @@ float Init_Probablity(float **semen)
     }
     altered_probablity /= s_row;
     normal_probablity /= s_row;
-    printf("\nap: %f, np: %f\n", altered_probablity, normal_probablity);
+    printf("\nTraining Dataset\n");
+    printf("Normal Probability: %f, Altered Probability: %f\n", normal_probablity, altered_probablity);
 
     Prob_Season();                // Init probablity for Seasons
     Prob_Childish_Disease();      // Init probablity for Childish Disease
@@ -39,9 +40,8 @@ float Init_Probablity(float **semen)
     Prob_Fever();                 // Init probablity for Fever
     Prob_Alcohol_Consumption();   // Init probablity for Alcohol Consumption
     Prob_Smoking();               // Init probablity for Smoking Habits
-
-    Prob_Age();
-    Prob_Sitting();
+    Prob_Age();                   // Init probablity for Age
+    Prob_Sitting();               // Init probability for Sitting hours
 
     //print to check probablity values
     //Seasons
@@ -96,10 +96,24 @@ float Init_Probablity(float **semen)
     // printf("\nMean of sitting: %f", normal.sitting_mean);
     // printf("\nSD of sitting: %f", normal.sitting_standard_deviation);
 
+    // Gaussian Probability of age and sitting
     // for (size_t i = 81; i < 100; i++)
     // {
     //     printf("\ntest guassian normal prob %d: %1.30lf",i, Gaussian_Probablity(semen_array[i], normal));
     //     printf("\ntest guassian altered prob %d: %1.30lf",i, Gaussian_Probablity(semen_array[i], altered));
+    // }
+
+    // Training Set Posterior Probability
+    // for (size_t i = 0; i < training_set; i++)
+    // {
+    //     printf("\n%d -> Normal Posterior Probability: %1.30lf", i, Posterior_Probability(i, normal));
+    //     printf("\n%d -> Altered Posterior Probability: %1.30lf", i, Posterior_Probability(i, altered));
+    // }
+
+    // Training Set NB Decision
+    // for (size_t i = 0; i < training_set; i++)
+    // {
+    //     printf("\n%d -> Decision: %d", i, NB_Decision(Posterior_Probability(i, normal), Posterior_Probability(i, altered)));
     // }
 }
 
@@ -613,3 +627,44 @@ float Gaussian_Probablity(float data[], struct Probablity probablity)
     sitting = (1 / sqrt(2 * M_PI)) * exp(-0.5 * pow((data[8] - probablity.sitting_mean) / probablity.sitting_standard_deviation, 2));
     return age * sitting;
 }
+
+//returns posterior probability
+float Posterior_Probability(int i, struct Probablity probablity)
+{
+    float pp;
+    // Age and Sitting hours probability
+    float gp = Gaussian_Probablity(semen_array[i], probablity);
+    pp = gp;
+    // Seasons probability
+    pp *= probablity.winter_probablity * probablity.spring_probablity * probablity.summer_probablity * probablity.fall_probablity;
+    // Childish Disease probability
+    pp *= probablity.disease_probablity * probablity.no_disease_probablity;
+    // Accident / Serious Trauma probability
+    pp *= probablity.trauma_probablity * probablity.no_trauma_probablity;
+    // Surgical Intervention probability
+    pp *= probablity.surgery_probablity * probablity.no_surgery_probablity;
+    // Fever probability
+    pp *= probablity.fever_less3m_probablity * probablity.fever_more3m_probablity * probablity.no_fever_probablity;
+    // Alcohol Consumption probability
+    pp *= probablity.alcohol_several_day_probablity * probablity.alcohol_everyday_probablity * probablity.alcohol_several_week_probablity * probablity.alcohol_once_week_probablity * probablity.alcohol_hardly_probablity;
+    // Smoking Habits probability
+    pp *= probablity.smoke_never_probablity * probablity.smoke_occasional_probablity * probablity.smoke_daily_probablity;
+    return pp;
+}
+
+//returns nb algo decision based on Posterior Probability
+int NB_Decision(float normal_p, float altered_p)
+{
+    int res = 0; // 0 = normal
+    if (normal_p >= altered_p)
+    {
+        return res;
+    }
+    else
+    {
+        res = 1; // 1 = altered
+        return res;
+    }
+}
+
+//returns probability of error

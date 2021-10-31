@@ -50,6 +50,12 @@ void Standard_Deviation(int column, float mean[], float sd[]);
 //calculate probablity of both age and sitting and return age * probablity
 float Gaussian_Probablity(float data[], struct Probablity probablity);
 
+//calculate posterior probability of all the conditions
+float Posterior_Probability(int i, struct Probablity probablity);
+
+//make decision based on posterior probability
+int NB_Decision(float normal_p, float altered_p);
+
 //use (results*100)/total data to get scoring 
 //calculate the score for the naive bayes algo
 float Scoring();
