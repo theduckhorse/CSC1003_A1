@@ -4,88 +4,79 @@
 #include <stdio.h>
 #include <math.h>
 
-//probablity for being altered or normal
-float altered_probablity = 0;
-float normal_probablity = 0;
-
-//80:20 (Training Set : Testing Set)
-int training_set, testing_set = 0;
+// Total data size; 100
+#define data_size 100
+// 80:20 (Training Set : Testing Set)
+#define training_set 80
+#define testing_set 20
 
 //store the caculated probablities into these structs
-struct Probablity altered;
-struct Probablity normal;
+struct probability altered;
+struct probability normal;
 
-float Init_Probablity(float **semen)
+//store error probability in the array
+//double prob_error_arr[training_set][1];
+
+float Init_Probability(float **semen)
 {
-    //Get Amount for 80:20 (Training Set : Testing Set)
-    testing_set = s_row * 0.2;
-    training_set = s_row - testing_set;
-
-    for (int i = 0; i < training_set; i++)
-    {
-        if (semen[i][s_col - 1] == 1.0f) //assume last rows = results
-            altered_probablity++;
-        else
-            normal_probablity++;
-    }
-    altered_probablity /= s_row;
-    normal_probablity /= s_row;
-    printf("\nTraining Dataset\n");
-    printf("Normal Probability: %f, Altered Probability: %f\n", normal_probablity, altered_probablity);
-
-    Prob_Season();                // Init probablity for Seasons
-    Prob_Childish_Disease();      // Init probablity for Childish Disease
-    Prob_Accident();              // Init probablity for Accident / Serious Trauma
-    Prob_Surgical_Intervention(); // Init probablity for Surgical Intervention
-    Prob_Fever();                 // Init probablity for Fever
-    Prob_Alcohol_Consumption();   // Init probablity for Alcohol Consumption
-    Prob_Smoking();               // Init probablity for Smoking Habits
-    Prob_Age();                   // Init probablity for Age
+    Prior_Probability();          // Init prior probability
+    Prob_Season();                // Init probability for Seasons
+    Prob_Childish_Disease();      // Init probability for Childish Disease
+    Prob_Accident();              // Init probability for Accident / Serious Trauma
+    Prob_Surgical_Intervention(); // Init probability for Surgical Intervention
+    Prob_Fever();                 // Init probability for Fever
+    Prob_Alcohol_Consumption();   // Init probability for Alcohol Consumption
+    Prob_Smoking();               // Init probability for Smoking Habits
+    Prob_Age();                   // Init probability for Age
     Prob_Sitting();               // Init probability for Sitting hours
 
-    //print to check probablity values
+    //print to check probability values
+
+    //Prior Probability
+    // printf("\nNormal Probability: %f, Altered Probability: %f", normal.prior_probability, altered.prior_probability);
+
     //Seasons
     /*
-    printf("\nProb of Normal Winter, Spring, Summer, Fall: %f, %f, %f, %f", normal.winter_probablity,normal.spring_probablity,normal.summer_probablity,normal.fall_probablity);
-    printf("\nProb of Alt Winter, Spring, Summer, Fall: %f, %f, %f, %f", altered.winter_probablity,altered.spring_probablity,altered.summer_probablity,altered.fall_probablity);
+    printf("\nProb of Normal Winter, Spring, Summer, Fall: %f, %f, %f, %f", normal.winter_probability,normal.spring_probability,normal.summer_probability,normal.fall_probability);
+    printf("\nProb of Alt Winter, Spring, Summer, Fall: %f, %f, %f, %f", altered.winter_probability,altered.spring_probability,altered.summer_probability,altered.fall_probability);
     */
 
     //Age
 
     //Childish Disease
     /*
-    printf("\nProb of Normal Childish Disease| Yes, No: %f, %f", normal.disease_probablity,normal.no_disease_probablity);
-    printf("\nProb of Alt Childish Disease| Yes, No: %f, %f", altered.disease_probablity,altered.no_disease_probablity);
+    printf("\nProb of Normal Childish Disease| Yes, No: %f, %f", normal.disease_probability,normal.no_disease_probability);
+    printf("\nProb of Alt Childish Disease| Yes, No: %f, %f", altered.disease_probability,altered.no_disease_probability);
     */
 
     //Accident / Serious Trauma
     /*
-    printf("\nProb of Normal Accident/Serious Trauma| Yes, No: %f, %f", normal.trauma_probablity,normal.no_trauma_probablity);
-    printf("\nProb of Alt Accident/Serious Trauma| Yes, No: %f, %f", altered.trauma_probablity,altered.no_trauma_probablity);
+    printf("\nProb of Normal Accident/Serious Trauma| Yes, No: %f, %f", normal.trauma_probability,normal.no_trauma_probability);
+    printf("\nProb of Alt Accident/Serious Trauma| Yes, No: %f, %f", altered.trauma_probability,altered.no_trauma_probability);
     */
 
     //Surgical Intervention
     /*
-    printf("\nProb of Normal Surgical Intervention| Yes, No: %f, %f", normal.surgery_probablity,normal.no_surgery_probablity);
-    printf("\nProb of Alt Surgical Intervention| Yes, No: %f, %f", altered.surgery_probablity,altered.no_surgery_probablity);
+    printf("\nProb of Normal Surgical Intervention| Yes, No: %f, %f", normal.surgery_probability,normal.no_surgery_probability);
+    printf("\nProb of Alt Surgical Intervention| Yes, No: %f, %f", altered.surgery_probability,altered.no_surgery_probability);
     */
 
     //Fever
     /*
-    printf("\nProb of Normal Fever| L3, M3, No: %f, %f, %f", normal.fever_less3m_probablity,normal.fever_more3m_probablity,normal.no_fever_probablity);
-    printf("\nProb of Alt Fever| L3, M3, No: %f, %f, %f", altered.fever_less3m_probablity,altered.fever_more3m_probablity,altered.no_fever_probablity);
+    printf("\nProb of Normal Fever| L3, M3, No: %f, %f, %f", normal.fever_less3m_probability,normal.fever_more3m_probability,normal.no_fever_probability);
+    printf("\nProb of Alt Fever| L3, M3, No: %f, %f, %f", altered.fever_less3m_probability,altered.fever_more3m_probability,altered.no_fever_probability);
     */
 
     //Frequency of alcohol consumption
     /*
-    printf("\nProb of Normal Frequency of alcohol consumption| Several times a day, Every day, Several times a week, Once a week, Hardly ever or never: %f, %f, %f, %f, %f", normal.alcohol_several_day_probablity,normal.alcohol_everyday_probablity,normal.alcohol_several_week_probablity,normal.alcohol_once_week_probablity,normal.alcohol_hardly_probablity);
-    printf("\nProb of Alt Frequency of alcohol consumption| Several times a day, Every day, Several times a week, Once a week, Hardly ever or never: %f, %f, %f, %f, %f", altered.alcohol_several_day_probablity,altered.alcohol_everyday_probablity,altered.alcohol_several_week_probablity,altered.alcohol_once_week_probablity,altered.alcohol_hardly_probablity);
+    printf("\nProb of Normal Frequency of alcohol consumption| Several times a day, Every day, Several times a week, Once a week, Hardly ever or never: %f, %f, %f, %f, %f", normal.alcohol_several_day_probability,normal.alcohol_everyday_probability,normal.alcohol_several_week_probability,normal.alcohol_once_week_probability,normal.alcohol_hardly_probability);
+    printf("\nProb of Alt Frequency of alcohol consumption| Several times a day, Every day, Several times a week, Once a week, Hardly ever or never: %f, %f, %f, %f, %f", altered.alcohol_several_day_probability,altered.alcohol_everyday_probability,altered.alcohol_several_week_probability,altered.alcohol_once_week_probability,altered.alcohol_hardly_probability);
     */
 
     //Smoking Habit
     /*
-    printf("\nProb of Normal Smoking Habit| Never, Occasional, Daily: %f, %f, %f", normal.smoke_never_probablity,normal.smoke_occasional_probablity,normal.smoke_daily_probablity);
-    printf("\nProb of Alt Smoking Habit| Never, Occasional, Daily: %f, %f, %f", altered.smoke_never_probablity,altered.smoke_occasional_probablity,altered.smoke_daily_probablity);
+    printf("\nProb of Normal Smoking Habit| Never, Occasional, Daily: %f, %f, %f", normal.smoke_never_probability,normal.smoke_occasional_probability,normal.smoke_daily_probability);
+    printf("\nProb of Alt Smoking Habit| Never, Occasional, Daily: %f, %f, %f", altered.smoke_never_probability,altered.smoke_occasional_probability,altered.smoke_daily_probability);
     */
 
     // mean + SD of age
@@ -99,22 +90,44 @@ float Init_Probablity(float **semen)
     // Gaussian Probability of age and sitting
     // for (size_t i = 81; i < 100; i++)
     // {
-    //     printf("\ntest guassian normal prob %d: %1.30lf",i, Gaussian_Probablity(semen_array[i], normal));
-    //     printf("\ntest guassian altered prob %d: %1.30lf",i, Gaussian_Probablity(semen_array[i], altered));
+    //     printf("\ntest guassian normal prob %d: %1.30lf",i, Gaussian_probability(semen_array[i], normal));
+    //     printf("\ntest guassian altered prob %d: %1.30lf",i, Gaussian_probability(semen_array[i], altered));
     // }
 
     // Training Set Posterior Probability
     // for (size_t i = 0; i < training_set; i++)
     // {
-    //     printf("\n%d -> Normal Posterior Probability: %1.30lf", i, Posterior_Probability(i, normal));
-    //     printf("\n%d -> Altered Posterior Probability: %1.30lf", i, Posterior_Probability(i, altered));
+    //     printf("\n%d -> Normal Posterior Probability: %1.30lf", i+1, Posterior_Probability(i, normal));
+    //     printf("\n%d -> Altered Posterior Probability: %1.30lf", i+1, Posterior_Probability(i, altered));
     // }
 
-    // Training Set NB Decision
+    // Training Set NB Prediction
     // for (size_t i = 0; i < training_set; i++)
     // {
-    //     printf("\n%d -> Decision: %d", i, NB_Decision(Posterior_Probability(i, normal), Posterior_Probability(i, altered)));
+    //     printf("\n%d -> Prediction: %d", i+1, NB_Prediction(Posterior_Probability(i, normal), Posterior_Probability(i, altered)));
     // }
+}
+
+// calculates prior probability
+void Prior_Probability()
+{
+    //probability for being altered or normal
+    float altered_probability = 0;
+    float normal_probability = 0;
+
+    for (int i = 0; i < training_set; i++)
+    {
+        if (semen_array[i][s_col - 1] == 1.0f) //assume last rows = results
+            altered_probability++;
+        else
+            normal_probability++;
+    }
+    altered_probability /= s_row;
+    normal_probability /= s_row;
+
+    // Store value in struct Probability variable
+    altered.prior_probability = altered_probability;
+    normal.prior_probability = normal_probability;
 }
 
 void Prob_Season()
@@ -174,14 +187,14 @@ void Prob_Season()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.winter_probablity = aprobability[0];
-    altered.spring_probablity = aprobability[1];
-    altered.summer_probablity = aprobability[2];
-    altered.fall_probablity = aprobability[3];
-    normal.winter_probablity = nprobability[0];
-    normal.spring_probablity = nprobability[1];
-    normal.summer_probablity = nprobability[2];
-    normal.fall_probablity = nprobability[3];
+    altered.winter_probability = aprobability[0];
+    altered.spring_probability = aprobability[1];
+    altered.summer_probability = aprobability[2];
+    altered.fall_probability = aprobability[3];
+    normal.winter_probability = nprobability[0];
+    normal.spring_probability = nprobability[1];
+    normal.summer_probability = nprobability[2];
+    normal.fall_probability = nprobability[3];
 }
 
 void Prob_Childish_Disease()
@@ -231,10 +244,10 @@ void Prob_Childish_Disease()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.no_disease_probablity = aprobability[0];
-    altered.disease_probablity = aprobability[1];
-    normal.no_disease_probablity = nprobability[0];
-    normal.disease_probablity = nprobability[1];
+    altered.no_disease_probability = aprobability[0];
+    altered.disease_probability = aprobability[1];
+    normal.no_disease_probability = nprobability[0];
+    normal.disease_probability = nprobability[1];
 }
 
 void Prob_Accident()
@@ -284,10 +297,10 @@ void Prob_Accident()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.no_trauma_probablity = aprobability[0];
-    altered.trauma_probablity = aprobability[1];
-    normal.no_trauma_probablity = nprobability[0];
-    normal.trauma_probablity = nprobability[1];
+    altered.no_trauma_probability = aprobability[0];
+    altered.trauma_probability = aprobability[1];
+    normal.no_trauma_probability = nprobability[0];
+    normal.trauma_probability = nprobability[1];
 }
 
 void Prob_Surgical_Intervention()
@@ -337,10 +350,10 @@ void Prob_Surgical_Intervention()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.no_surgery_probablity = aprobability[0];
-    altered.surgery_probablity = aprobability[1];
-    normal.no_surgery_probablity = nprobability[0];
-    normal.surgery_probablity = nprobability[1];
+    altered.no_surgery_probability = aprobability[0];
+    altered.surgery_probability = aprobability[1];
+    normal.no_surgery_probability = nprobability[0];
+    normal.surgery_probability = nprobability[1];
 }
 
 void Prob_Fever()
@@ -396,12 +409,12 @@ void Prob_Fever()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.fever_less3m_probablity = aprobability[0];
-    altered.fever_more3m_probablity = aprobability[1];
-    altered.no_fever_probablity = aprobability[2];
-    normal.fever_less3m_probablity = nprobability[0];
-    normal.fever_more3m_probablity = nprobability[1];
-    normal.no_fever_probablity = nprobability[2];
+    altered.fever_less3m_probability = aprobability[0];
+    altered.fever_more3m_probability = aprobability[1];
+    altered.no_fever_probability = aprobability[2];
+    normal.fever_less3m_probability = nprobability[0];
+    normal.fever_more3m_probability = nprobability[1];
+    normal.no_fever_probability = nprobability[2];
 }
 void Prob_Alcohol_Consumption()
 {
@@ -468,16 +481,16 @@ void Prob_Alcohol_Consumption()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.alcohol_several_day_probablity = aprobability[0];
-    altered.alcohol_everyday_probablity = aprobability[1];
-    altered.alcohol_several_week_probablity = aprobability[2];
-    altered.alcohol_once_week_probablity = aprobability[3];
-    altered.alcohol_hardly_probablity = aprobability[4];
-    normal.alcohol_several_day_probablity = nprobability[0];
-    normal.alcohol_everyday_probablity = nprobability[1];
-    normal.alcohol_several_week_probablity = nprobability[2];
-    normal.alcohol_once_week_probablity = nprobability[3];
-    normal.alcohol_hardly_probablity = nprobability[4];
+    altered.alcohol_several_day_probability = aprobability[0];
+    altered.alcohol_everyday_probability = aprobability[1];
+    altered.alcohol_several_week_probability = aprobability[2];
+    altered.alcohol_once_week_probability = aprobability[3];
+    altered.alcohol_hardly_probability = aprobability[4];
+    normal.alcohol_several_day_probability = nprobability[0];
+    normal.alcohol_everyday_probability = nprobability[1];
+    normal.alcohol_several_week_probability = nprobability[2];
+    normal.alcohol_once_week_probability = nprobability[3];
+    normal.alcohol_hardly_probability = nprobability[4];
 }
 
 void Prob_Smoking()
@@ -533,12 +546,12 @@ void Prob_Smoking()
         aprobability[i] /= (training_set - normalcount + alpha);
     }
     //Store value to struct Probability variable
-    altered.smoke_never_probablity = aprobability[0];
-    altered.smoke_occasional_probablity = aprobability[1];
-    altered.smoke_daily_probablity = aprobability[2];
-    normal.smoke_never_probablity = nprobability[0];
-    normal.smoke_occasional_probablity = nprobability[1];
-    normal.smoke_daily_probablity = nprobability[2];
+    altered.smoke_never_probability = aprobability[0];
+    altered.smoke_occasional_probability = aprobability[1];
+    altered.smoke_daily_probability = aprobability[2];
+    normal.smoke_never_probability = nprobability[0];
+    normal.smoke_occasional_probability = nprobability[1];
+    normal.smoke_daily_probability = nprobability[2];
 }
 
 void Prob_Age()
@@ -620,51 +633,101 @@ void Standard_Deviation(int column, float mean[], float sd[])
 }
 
 //returns average of the column
-float Gaussian_Probablity(float data[], struct Probablity probablity)
+float Gaussian_Probability(float data[], struct probability probability)
 {
     float age, sitting;
-    age = (1 / sqrt(2 * M_PI)) * exp(-0.5 * pow((data[1] - probablity.age_mean) / probablity.age_standard_deviation, 2));
-    sitting = (1 / sqrt(2 * M_PI)) * exp(-0.5 * pow((data[8] - probablity.sitting_mean) / probablity.sitting_standard_deviation, 2));
+    age = (1 / sqrt(2 * M_PI)) * exp(-0.5 * pow((data[1] - probability.age_mean) / probability.age_standard_deviation, 2));
+    sitting = (1 / sqrt(2 * M_PI)) * exp(-0.5 * pow((data[8] - probability.sitting_mean) / probability.sitting_standard_deviation, 2));
     return age * sitting;
 }
 
-//returns posterior probability
-float Posterior_Probability(int i, struct Probablity probablity)
+//returns posterior probability for altered and normal
+double Posterior_Probability(int i, struct probability probability)
 {
-    float pp;
+    double pp;
     // Age and Sitting hours probability
-    float gp = Gaussian_Probablity(semen_array[i], probablity);
-    pp = gp;
+    double gp = Gaussian_Probability(semen_array[i], probability);
     // Seasons probability
-    pp *= probablity.winter_probablity * probablity.spring_probablity * probablity.summer_probablity * probablity.fall_probablity;
+    pp = gp * probability.winter_probability * probability.spring_probability * probability.summer_probability * probability.fall_probability;
     // Childish Disease probability
-    pp *= probablity.disease_probablity * probablity.no_disease_probablity;
+    pp *= probability.disease_probability * probability.no_disease_probability;
     // Accident / Serious Trauma probability
-    pp *= probablity.trauma_probablity * probablity.no_trauma_probablity;
+    pp *= probability.trauma_probability * probability.no_trauma_probability;
     // Surgical Intervention probability
-    pp *= probablity.surgery_probablity * probablity.no_surgery_probablity;
+    pp *= probability.surgery_probability * probability.no_surgery_probability;
     // Fever probability
-    pp *= probablity.fever_less3m_probablity * probablity.fever_more3m_probablity * probablity.no_fever_probablity;
+    pp *= probability.fever_less3m_probability * probability.fever_more3m_probability * probability.no_fever_probability;
     // Alcohol Consumption probability
-    pp *= probablity.alcohol_several_day_probablity * probablity.alcohol_everyday_probablity * probablity.alcohol_several_week_probablity * probablity.alcohol_once_week_probablity * probablity.alcohol_hardly_probablity;
+    pp *= probability.alcohol_several_day_probability * probability.alcohol_everyday_probability * probability.alcohol_several_week_probability * probability.alcohol_once_week_probability * probability.alcohol_hardly_probability;
     // Smoking Habits probability
-    pp *= probablity.smoke_never_probablity * probablity.smoke_occasional_probablity * probablity.smoke_daily_probablity;
+    pp *= probability.smoke_never_probability * probability.smoke_occasional_probability * probability.smoke_daily_probability;
+    // Prior probability
+    pp *= probability.prior_probability;
     return pp;
 }
 
-//returns nb algo decision based on Posterior Probability
-int NB_Decision(float normal_p, float altered_p)
+//returns nb prediction based on Posterior Probability
+int NB_Prediction(double pp_normal, double pp_altered)
 {
-    int res = 0; // 0 = normal
-    if (normal_p >= altered_p)
+    int res = 1; // 1 = altered
+    if (pp_normal >= pp_altered)
     {
-        return res;
+        res = 0; // 0 = normal
     }
-    else
-    {
-        res = 1; // 1 = altered
-        return res;
-    }
+    return res;
 }
 
-//returns probability of error
+//stores probability of error in an array after making final predictions
+double **Make_Predict(int start_count, int end_count, int size)
+{
+    int count = 0;
+    double error_sum = 0;
+    double error_probability;
+    double **prob_error_arr = malloc(size * sizeof(double *));
+
+    for (size_t i = start_count; i < end_count; i++)
+    {
+        double pp_normal = Posterior_Probability(i, normal);
+        double pp_altered = Posterior_Probability(i, altered);
+        int predicted_res = NB_Prediction(pp_normal, pp_altered);
+        int real = semen_array[i][s_col - 1];
+        // check if predicted outcome = real outcome
+        if (predicted_res != real)
+        {
+            error_sum ++;
+        }
+        // calculates probability of error
+        error_probability = 1.0 / end_count * error_sum;
+        // adds probability of error to array
+        prob_error_arr[count] = malloc(1 * sizeof(double *));
+        prob_error_arr[count][0] = error_probability;
+        count ++;
+    }
+    return prob_error_arr;
+}
+
+//plots the error probability graph
+void Plot_Graph(int terminal, char *name, int size, double **prob_error_arr)
+{
+    const char *ylabel = "Error Probability";
+    const char *xlabel = "Data No.";
+    // open persistent gnuplot window
+    FILE *gnuplot_pipe = popen("gnuplot -persistent", "w");
+    // basic settings
+    fprintf(gnuplot_pipe, "set terminal qt %d\n", terminal);
+    fprintf(gnuplot_pipe, "set title '%s'\n", name);
+    fprintf(gnuplot_pipe, "set ylabel '%s' textcolor rgb '#0060ad'\n", ylabel);
+    fprintf(gnuplot_pipe, "set xlabel '%s' textcolor rgb '#FF7000'\n", xlabel);
+    fprintf(gnuplot_pipe, "set grid\n");
+    fprintf(gnuplot_pipe, "set style line 1 linecolor rgb '#0060ad' ");
+    fprintf(gnuplot_pipe, "linetype 1 linewidth 1 pointtype 7 pointsize 1\n");
+    // fill it with data
+    fprintf(gnuplot_pipe, "plot '-' with linespoints linestyle 1\n");
+    for (size_t i = 0; i < size; ++i)
+    {
+        fprintf(gnuplot_pipe, "%zu %f\n", i, prob_error_arr[i][0]);
+    }
+    fprintf(gnuplot_pipe, "e\n");
+    // refresh can probably be omitted
+    fprintf(gnuplot_pipe, "refresh\n");
+}
