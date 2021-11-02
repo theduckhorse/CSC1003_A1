@@ -1,12 +1,14 @@
 # CSC1003_A1
 CSC1003 Assignment 1
 
-1)Installation of GNUPLOT is required to run the program
+Naive Bayes Classifier for Fertility Diagnostic
 
-2)search for "Edit the system environment variables" in control panel
+1) Installation of GNUPLOT is required to run the program
 
-3)click on environment variables
+2) Search for "Edit the system environment variables" in control panel
 
-4)under system variables, look for 'path' and click edit
+3) Click on environment variables
 
-5)add a new environment variable for GNUPLOT (C:\Program Files\gnuplot\bin)
+4) Under system variables, look for 'path' and click edit
+
+5) Add a new environment variable for GNUPLOT (C:\Program Files\gnuplot\bin)
