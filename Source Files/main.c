@@ -30,11 +30,10 @@ int main()
     Init_Probability(semen_array);
 
     // Training Set
-    training_res = Make_Prediction(0, training_set, training_set);          // Init prediction result for training set (80)
-    training_cm_arr = Compute_Confusion_Matrix(training_res, training_set); // Init confusion matrix results
-    Plot_Graph(0, title1, ylabel, xlabel, training_set, training_res, err_col);              // Plots error probability graph
-    Print_CM_Table(title1, training_cm_arr); // Prints confusion matrix table
-    printf("\n");
+    training_res = Make_Prediction(0, training_set, training_set);              // Init prediction result for training set (80)
+    training_cm_arr = Compute_Confusion_Matrix(training_res, training_set);     // Init confusion matrix results
+    Plot_Graph(0, title1, ylabel, xlabel, training_set, training_res, err_col); // Plots error probability graph
+    Print_CM_Table(title1, training_cm_arr);                                    // Prints confusion matrix table
 
     // free up malloc arrays
     free(*training_res);

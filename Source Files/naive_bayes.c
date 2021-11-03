@@ -781,6 +781,7 @@ void Print_CM_Table(char *title, int *cm_arr)
     printf("%-20s%-20s%-20s\n", "", "Predicted: Normal", "Predicted: Altered");
     printf("%-25s%-25d%-10d\n", "Actual: Normal", tn_count, fp_count);
     printf("%-25s%-25d%-10d\n", "Actual: Altered", fn_count, tp_count);
+    printf("\n");
 }
 
 //plots a graph
