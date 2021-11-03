@@ -14,9 +14,6 @@
 struct probability altered;
 struct probability normal;
 
-//store error probability in the array
-//double prob_error_arr[training_set][1];
-
 float Init_Probability(float **semen)
 {
     Prior_Probability();          // Init prior probability
@@ -29,8 +26,12 @@ float Init_Probability(float **semen)
     Prob_Smoking();               // Init probability for Smoking Habits
     Prob_Age();                   // Init probability for Age
     Prob_Sitting();               // Init probability for Sitting hours
+    Print_Values();               // prints values for debugging
+}
 
-    //print to check probability values
+void Print_Values()
+{
+    //Print to check probability values, uncomment to print
 
     //Prior Probability
     // printf("\nNormal Probability: %f, Altered Probability: %f", normal.prior_probability, altered.prior_probability);
@@ -677,45 +678,119 @@ int NB_Prediction(double pp_normal, double pp_altered)
     return res;
 }
 
-//stores probability of error in an array after making final predictions
-double **Make_Predict(int start_count, int end_count, int size)
+//returns array with final results after making final calculations
+double **Make_Prediction(int start_count, int end_count, int size)
 {
     int count = 0;
     double error_sum = 0;
     double error_probability;
-    double **prob_error_arr = malloc(size * sizeof(double *));
+    double pp_normal;
+    double pp_altered;
+    int predicted_res;
+    int real_res;
+    double **prediction_arr = malloc(size * sizeof(double *)); // dynamically allocate array
 
     for (size_t i = start_count; i < end_count; i++)
     {
-        double pp_normal = Posterior_Probability(i, normal);
-        double pp_altered = Posterior_Probability(i, altered);
-        int predicted_res = NB_Prediction(pp_normal, pp_altered);
-        int real = semen_array[i][s_col - 1];
+        pp_normal = Posterior_Probability(i, normal);
+        pp_altered = Posterior_Probability(i, altered);
+        predicted_res = NB_Prediction(pp_normal, pp_altered);
+        real_res = semen_array[i][s_col - 1];
+
         // check if predicted outcome = real outcome
-        if (predicted_res != real)
+        if (predicted_res != real_res)
         {
-            error_sum ++;
+            error_sum++;
         }
         // calculates probability of error
         error_probability = 1.0 / end_count * error_sum;
-        // adds probability of error to array
-        prob_error_arr[count] = malloc(1 * sizeof(double *));
-        prob_error_arr[count][0] = error_probability;
-        count ++;
+
+        // stores predicted values into the array
+        // allocates 4 columns for the data (pp_normal, pp_altered, real_res, predicted_res, error_probability)
+        prediction_arr[count] = malloc(5 * sizeof(double *));
+        // adds pp_normal to array
+        prediction_arr[count][0] = pp_normal;
+        // adds pp_altered to array
+        prediction_arr[count][1] = pp_altered;
+        // adds real_res to array
+        prediction_arr[count][2] = real_res;
+        // adds predicted_res to array
+        prediction_arr[count][3] = predicted_res;
+        // adds error_probability to array
+        prediction_arr[count][4] = error_probability;
+
+        count++;
     }
-    return prob_error_arr;
+
+    return prediction_arr;
 }
 
-//plots the error probability graph
-void Plot_Graph(int terminal, char *name, int size, double **prob_error_arr)
+//returns confusion matrix values in an array
+int *Compute_Confusion_Matrix(double **data_arr, int size)
 {
-    const char *ylabel = "Error Probability";
-    const char *xlabel = "Data No.";
+    int tp_count = 0, tn_count = 0, fp_count = 0, fn_count = 0;
+    static int cm_arr[4];
+    int real_res;
+    int predicted_res;
+    int real_res_col = 2;
+    int pred_res_col = 3;
+
+    for (size_t i = 0; i < size; i++)
+    {
+        real_res = data_arr[i][real_res_col];
+        predicted_res = data_arr[i][pred_res_col];
+
+        // True Positive : No of times predict correctly that patient is not normal
+        if (real_res == 1 && predicted_res == 1)
+        {
+            tp_count++;
+        }
+        // True Negative: No of times predict correctly that patient is normal
+        else if (real_res == 0 && predicted_res == 0)
+        {
+            tn_count++;
+        }
+        // False Positive: No of times predict wrongly that patient is not normal
+        else if (real_res == 0 && predicted_res == 1)
+        {
+            fp_count++;
+        }
+        // False Negative: No of times predict wrongly that patient is normal
+        else if (real_res == 1 && predicted_res == 0)
+        {
+            fn_count++;
+        }
+    }
+    // store confusion matrix results into array
+    cm_arr[0] = tp_count;
+    cm_arr[1] = tn_count;
+    cm_arr[2] = fp_count;
+    cm_arr[3] = fn_count;
+
+    return cm_arr;
+}
+
+//prints the confusion matrix table
+void Print_CM_Table(char *title, int *cm_arr)
+{
+    int tp_count = cm_arr[0];
+    int tn_count = cm_arr[1];
+    int fp_count = cm_arr[2];
+    int fn_count = cm_arr[3];
+    printf("%-20s%s\n", "", title);
+    printf("%-20s%-20s%-20s\n", "", "Predicted: Normal", "Predicted: Altered");
+    printf("%-25s%-25d%-10d\n", "Actual: Normal", tn_count, fp_count);
+    printf("%-25s%-25d%-10d\n", "Actual: Altered", fn_count, tp_count);
+}
+
+//plots a graph
+void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double **data_arr, int column)
+{
     // open persistent gnuplot window
     FILE *gnuplot_pipe = popen("gnuplot -persistent", "w");
     // basic settings
     fprintf(gnuplot_pipe, "set terminal qt %d\n", terminal);
-    fprintf(gnuplot_pipe, "set title '%s'\n", name);
+    fprintf(gnuplot_pipe, "set title '%s'\n", title);
     fprintf(gnuplot_pipe, "set ylabel '%s' textcolor rgb '#0060ad'\n", ylabel);
     fprintf(gnuplot_pipe, "set xlabel '%s' textcolor rgb '#FF7000'\n", xlabel);
     fprintf(gnuplot_pipe, "set grid\n");
@@ -725,7 +800,7 @@ void Plot_Graph(int terminal, char *name, int size, double **prob_error_arr)
     fprintf(gnuplot_pipe, "plot '-' with linespoints linestyle 1\n");
     for (size_t i = 0; i < size; ++i)
     {
-        fprintf(gnuplot_pipe, "%zu %f\n", i, prob_error_arr[i][0]);
+        fprintf(gnuplot_pipe, "%zu %f\n", i, data_arr[i][column]);
     }
     fprintf(gnuplot_pipe, "e\n");
     // refresh can probably be omitted

@@ -34,7 +34,7 @@ struct probability
 extern struct probability altered;
 extern struct probability normal;
 
-//assume that collumns are always the same data.
+//assume that columns are always the same data.
 
 //setup initial probability for altered and normal | float** is a 2d array
 float Init_Probability(float **semen);
@@ -58,10 +58,16 @@ double Posterior_Probability(int i, struct probability probability);
 int NB_Prediction(double normal_p, double altered_p);
 
 //makes final calculations for a given dataset from start_count to end_count
-double** Make_Predict(int start_count, int end_count, int size);
+double** Make_Prediction(int start_count, int end_count, int size);
 
-//plot probability of error graph
-void Plot_Graph(int terminal, char *name, int size, double** prob_error_arr);
+//calculate confusion matrix values
+int *Compute_Confusion_Matrix(double **data_arr, int size);
+
+//prints confusion matrix table
+void Print_CM_Table(char *title, int *cm_arr);
+
+//plots a graph based on data given
+void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double** data_arr, int column);
 
 //use (results*100)/total data to get scoring 
 //calculate the score for the naive bayes algo
@@ -84,5 +90,8 @@ void Prob_Fever();
 void Prob_Alcohol_Consumption();
 void Prob_Smoking();
 void Prob_Sitting();
+
+//prints values for debugging
+void Print_Values();
 
 #endif
