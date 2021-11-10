@@ -36,6 +36,7 @@ int main()
     Init_Probability(semen_array, semen_row);
 
     // Training Set
+    printf("\nConfusion Matrix Table:\n");
     training_res = Make_Prediction(0, training_set, training_set, semen_array); // Init prediction result for training set (80)
     training_cm_arr = Compute_Confusion_Matrix(training_res, training_set);     // Init confusion matrix results
     Plot_Graph(0, title1, ylabel, xlabel, training_set, training_res, err_col); // Plots error probability graph
