@@ -1,7 +1,7 @@
 // implment your functions here
 #include "..\Header Files\naive_bayes.h"
-#include "..\Header Files\semen.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 // Total data size; 100
@@ -14,19 +14,19 @@
 struct probability altered;
 struct probability normal;
 
-float Init_Probability(float **semen)
+float Init_Probability(float **semen, int s_row)
 {
-    Prior_Probability();          // Init prior probability
-    Prob_Season();                // Init probability for Seasons
-    Prob_Childish_Disease();      // Init probability for Childish Disease
-    Prob_Accident();              // Init probability for Accident / Serious Trauma
-    Prob_Surgical_Intervention(); // Init probability for Surgical Intervention
-    Prob_Fever();                 // Init probability for Fever
-    Prob_Alcohol_Consumption();   // Init probability for Alcohol Consumption
-    Prob_Smoking();               // Init probability for Smoking Habits
-    Prob_Age();                   // Init probability for Age
-    Prob_Sitting();               // Init probability for Sitting hours
-    Print_Values();               // prints values for debugging
+    Prior_Probability(semen, s_row);   // Init prior probability
+    Prob_Season(semen);                // Init probability for Seasons
+    Prob_Childish_Disease(semen);      // Init probability for Childish Disease
+    Prob_Accident(semen);              // Init probability for Accident / Serious Trauma
+    Prob_Surgical_Intervention(semen); // Init probability for Surgical Intervention
+    Prob_Fever(semen);                 // Init probability for Fever
+    Prob_Alcohol_Consumption(semen);   // Init probability for Alcohol Consumption
+    Prob_Smoking(semen);               // Init probability for Smoking Habits
+    Prob_Age(semen);                   // Init probability for Age
+    Prob_Sitting(semen);               // Init probability for Sitting hours
+    //Print_Values();               // prints values for debugging
 }
 
 void Print_Values()
@@ -91,8 +91,8 @@ void Print_Values()
     // Gaussian Probability of age and sitting
     // for (size_t i = 81; i < 100; i++)
     // {
-    //     printf("\ntest guassian normal prob %d: %1.30lf",i, Gaussian_probability(semen_array[i], normal));
-    //     printf("\ntest guassian altered prob %d: %1.30lf",i, Gaussian_probability(semen_array[i], altered));
+    //     printf("\ntest guassian normal prob %d: %1.30lf",i, Gaussian_probability(s_arr[i], normal));
+    //     printf("\ntest guassian altered prob %d: %1.30lf",i, Gaussian_probability(s_arr[i], altered));
     // }
 
     // Training Set Posterior Probability
@@ -110,7 +110,7 @@ void Print_Values()
 }
 
 // calculates prior probability
-void Prior_Probability()
+void Prior_Probability(float **s_arr, int s_row)
 {
     //probability for being altered or normal
     float altered_probability = 0;
@@ -118,7 +118,7 @@ void Prior_Probability()
 
     for (int i = 0; i < training_set; i++)
     {
-        if (semen_array[i][s_col - 1] == 1.0f) //assume last rows = results
+        if (s_arr[i][s_col - 1] == 1.0f) //assume last rows = results
             altered_probability++;
         else
             normal_probability++;
@@ -131,7 +131,7 @@ void Prior_Probability()
     normal.prior_probability = normal_probability;
 }
 
-void Prob_Season()
+void Prob_Season(float **s_arr)
 {
     int alpha = SEASON_ALPHA;
     float aprobability[4] = {0};
@@ -139,43 +139,43 @@ void Prob_Season()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][0] == -1.0f)
+            if (s_arr[i][0] == -1.0f)
                 nprobability[0]++;
 
-            else if (semen_array[i][0] == -0.33f)
+            else if (s_arr[i][0] == -0.33f)
                 nprobability[1]++;
 
-            else if (semen_array[i][0] == 0.33f)
+            else if (s_arr[i][0] == 0.33f)
                 nprobability[2]++;
 
-            else if (semen_array[i][0] == 1.0f)
+            else if (s_arr[i][0] == 1.0f)
                 nprobability[3]++;
             else
-                printf("\nError in line %d for Seasons value = \"%.2f\" skipping entry, only input (-1, -0.33, 0.33, 1)", (i + 1), semen_array[i][0]);
+                printf("\nError in line %d for Seasons value = \"%.2f\" skipping entry, only input (-1, -0.33, 0.33, 1)", (i + 1), s_arr[i][0]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][0] == -1.0f)
+            if (s_arr[i][0] == -1.0f)
                 aprobability[0]++;
 
-            else if (semen_array[i][0] == -0.33f)
+            else if (s_arr[i][0] == -0.33f)
                 aprobability[1]++;
 
-            else if (semen_array[i][0] == 0.33f)
+            else if (s_arr[i][0] == 0.33f)
                 aprobability[2]++;
 
-            else if (semen_array[i][0] == 1.0f)
+            else if (s_arr[i][0] == 1.0f)
                 aprobability[3]++;
             else
-                printf("\nError in line %d for Seasons value = \"%.2f\" skipping entry, only input (-1, -0.33, 0.33, 1)", (i + 1), semen_array[i][0]);
+                printf("\nError in line %d for Seasons value = \"%.2f\" skipping entry, only input (-1, -0.33, 0.33, 1)", (i + 1), s_arr[i][0]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -198,7 +198,7 @@ void Prob_Season()
     normal.fall_probability = nprobability[3];
 }
 
-void Prob_Childish_Disease()
+void Prob_Childish_Disease(float **s_arr)
 {
     int alpha = D_T_S_ALPHA;
     float aprobability[2] = {0};
@@ -206,33 +206,33 @@ void Prob_Childish_Disease()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][2] == 1)
+            if (s_arr[i][2] == 1)
                 nprobability[0]++;
 
-            else if (semen_array[i][2] == 0)
+            else if (s_arr[i][2] == 0)
                 nprobability[1]++;
 
             else
-                printf("\nError in line %d for Childish Disease value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][2]);
+                printf("\nError in line %d for Childish Disease value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][2]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][2] == 1)
+            if (s_arr[i][2] == 1)
                 aprobability[0]++;
 
-            else if (semen_array[i][2] == 0)
+            else if (s_arr[i][2] == 0)
                 aprobability[1]++;
 
             else
-                printf("\nError in line %d for Childish Disease value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][2]);
+                printf("\nError in line %d for Childish Disease value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][2]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -251,7 +251,7 @@ void Prob_Childish_Disease()
     normal.disease_probability = nprobability[1];
 }
 
-void Prob_Accident()
+void Prob_Accident(float **s_arr)
 {
     int alpha = D_T_S_ALPHA;
     float aprobability[2] = {0};
@@ -259,33 +259,33 @@ void Prob_Accident()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][3] == 1)
+            if (s_arr[i][3] == 1)
                 nprobability[0]++;
 
-            else if (semen_array[i][3] == 0)
+            else if (s_arr[i][3] == 0)
                 nprobability[1]++;
 
             else
-                printf("\nError in line %d for Accident/Trauma value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][3]);
+                printf("\nError in line %d for Accident/Trauma value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][3]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][3] == 1)
+            if (s_arr[i][3] == 1)
                 aprobability[0]++;
 
-            else if (semen_array[i][3] == 0)
+            else if (s_arr[i][3] == 0)
                 aprobability[1]++;
 
             else
-                printf("\nError in line %d for Accident/Trauma value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][3]);
+                printf("\nError in line %d for Accident/Trauma value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][3]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -304,7 +304,7 @@ void Prob_Accident()
     normal.trauma_probability = nprobability[1];
 }
 
-void Prob_Surgical_Intervention()
+void Prob_Surgical_Intervention(float **s_arr)
 {
     int alpha = D_T_S_ALPHA;
     float aprobability[2] = {0};
@@ -312,33 +312,33 @@ void Prob_Surgical_Intervention()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][4] == 1)
+            if (s_arr[i][4] == 1)
                 nprobability[0]++;
 
-            else if (semen_array[i][4] == 0)
+            else if (s_arr[i][4] == 0)
                 nprobability[1]++;
 
             else
-                printf("\nError in line %d for Surgical Intervention value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][4]);
+                printf("\nError in line %d for Surgical Intervention value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][4]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][4] == 1)
+            if (s_arr[i][4] == 1)
                 aprobability[0]++;
 
-            else if (semen_array[i][4] == 0)
+            else if (s_arr[i][4] == 0)
                 aprobability[1]++;
 
             else
-                printf("\nError in line %d for Surgical Intervention value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][4]);
+                printf("\nError in line %d for Surgical Intervention value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][4]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -357,7 +357,7 @@ void Prob_Surgical_Intervention()
     normal.surgery_probability = nprobability[1];
 }
 
-void Prob_Fever()
+void Prob_Fever(float **s_arr)
 {
     int alpha = F_S_ALPHA;
     float aprobability[3] = {0};
@@ -365,39 +365,39 @@ void Prob_Fever()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][5] == -1)
+            if (s_arr[i][5] == -1)
                 nprobability[0]++;
 
-            else if (semen_array[i][5] == 0)
+            else if (s_arr[i][5] == 0)
                 nprobability[1]++;
 
-            else if (semen_array[i][5] == 1)
+            else if (s_arr[i][5] == 1)
                 nprobability[2]++;
 
             else
-                printf("\nError in line %d for High fevers in last year value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][5]);
+                printf("\nError in line %d for High fevers in last year value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][5]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][5] == -1)
+            if (s_arr[i][5] == -1)
                 aprobability[0]++;
 
-            else if (semen_array[i][5] == 0)
+            else if (s_arr[i][5] == 0)
                 aprobability[1]++;
 
-            else if (semen_array[i][5] == 1)
+            else if (s_arr[i][5] == 1)
                 aprobability[2]++;
 
             else
-                printf("\nError in line %d for High fevers in last year value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), semen_array[i][5]);
+                printf("\nError in line %d for High fevers in last year value = \"%.2f\" skipping entry, only input (0, 1)", (i + 1), s_arr[i][5]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -417,7 +417,7 @@ void Prob_Fever()
     normal.fever_more3m_probability = nprobability[1];
     normal.no_fever_probability = nprobability[2];
 }
-void Prob_Alcohol_Consumption()
+void Prob_Alcohol_Consumption(float **s_arr)
 {
     int alpha = ALCOHOL_ALPHA;
     float aprobability[5] = {0};
@@ -425,51 +425,51 @@ void Prob_Alcohol_Consumption()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][6] == 0.2f)
+            if (s_arr[i][6] == 0.2f)
                 nprobability[0]++;
 
-            else if (semen_array[i][6] == 0.4f)
+            else if (s_arr[i][6] == 0.4f)
                 nprobability[1]++;
 
-            else if (semen_array[i][6] == 0.6f)
+            else if (s_arr[i][6] == 0.6f)
                 nprobability[2]++;
 
-            else if (semen_array[i][6] == 0.8f)
+            else if (s_arr[i][6] == 0.8f)
                 nprobability[3]++;
 
-            else if (semen_array[i][6] == 1.f)
+            else if (s_arr[i][6] == 1.f)
                 nprobability[4]++;
 
             else
-                printf("\nError in line %d for Frequency of alcohol consumption value = \"%.2f\" skipping entry, only input (0.2, 0.4, 0.6, 0.8, 1)", (i + 1), semen_array[i][6]);
+                printf("\nError in line %d for Frequency of alcohol consumption value = \"%.2f\" skipping entry, only input (0.2, 0.4, 0.6, 0.8, 1)", (i + 1), s_arr[i][6]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][6] == 0.2f)
+            if (s_arr[i][6] == 0.2f)
                 aprobability[0]++;
 
-            else if (semen_array[i][6] == 0.4f)
+            else if (s_arr[i][6] == 0.4f)
                 aprobability[1]++;
 
-            else if (semen_array[i][6] == 0.6f)
+            else if (s_arr[i][6] == 0.6f)
                 aprobability[2]++;
 
-            else if (semen_array[i][6] == 0.8f)
+            else if (s_arr[i][6] == 0.8f)
                 aprobability[3]++;
 
-            else if (semen_array[i][6] == 1.f)
+            else if (s_arr[i][6] == 1.f)
                 aprobability[4]++;
 
             else
-                printf("\nError in line %d for Frequency of alcohol consumption value = \"%.2f\" skipping entry, only input (0.2, 0.4, 0.6, 0.8, 1)", (i + 1), semen_array[i][6]);
+                printf("\nError in line %d for Frequency of alcohol consumption value = \"%.2f\" skipping entry, only input (0.2, 0.4, 0.6, 0.8, 1)", (i + 1), s_arr[i][6]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -494,7 +494,7 @@ void Prob_Alcohol_Consumption()
     normal.alcohol_hardly_probability = nprobability[4];
 }
 
-void Prob_Smoking()
+void Prob_Smoking(float **s_arr)
 {
     int alpha = F_S_ALPHA;
     float aprobability[3] = {0};
@@ -502,39 +502,39 @@ void Prob_Smoking()
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            if (semen_array[i][7] == -1)
+            if (s_arr[i][7] == -1)
                 nprobability[0]++;
 
-            else if (semen_array[i][7] == 0)
+            else if (s_arr[i][7] == 0)
                 nprobability[1]++;
 
-            else if (semen_array[i][7] == 1)
+            else if (s_arr[i][7] == 1)
                 nprobability[2]++;
 
             else
-                printf("\nError in line %d for Smoking Habit value = \"%.2f\" skipping entry, only input (-1, 0, 1)", (i + 1), semen_array[i][7]);
+                printf("\nError in line %d for Smoking Habit value = \"%.2f\" skipping entry, only input (-1, 0, 1)", (i + 1), s_arr[i][7]);
             normalcount++;
             break;
 
         case 1: // Altered
-            if (semen_array[i][7] == -1)
+            if (s_arr[i][7] == -1)
                 aprobability[0]++;
 
-            else if (semen_array[i][7] == 0)
+            else if (s_arr[i][7] == 0)
                 aprobability[1]++;
 
-            else if (semen_array[i][7] == 1)
+            else if (s_arr[i][7] == 1)
                 aprobability[2]++;
 
             else
-                printf("\nError in line %d for Smoking Habit value = \"%.2f\" skipping entry, only input (-1, 0, 1)", (i + 1), semen_array[i][7]);
+                printf("\nError in line %d for Smoking Habit value = \"%.2f\" skipping entry, only input (-1, 0, 1)", (i + 1), s_arr[i][7]);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry, only input (0, 1)", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -555,46 +555,46 @@ void Prob_Smoking()
     normal.smoke_daily_probability = nprobability[2];
 }
 
-void Prob_Age()
+void Prob_Age(float **s_arr)
 {
     float mean[2] = {0, 0}, sd[2] = {0, 0};
-    Mean(1, mean);
+    Mean(1, mean, s_arr);
     normal.age_mean = mean[0];
     altered.age_mean = mean[1];
-    Standard_Deviation(1, mean, sd);
+    Standard_Deviation(1, mean, sd, s_arr);
     normal.age_standard_deviation = sd[0];
     altered.age_standard_deviation = sd[1];
 }
 
-void Prob_Sitting()
+void Prob_Sitting(float **s_arr)
 {
     float mean[2] = {0, 0}, sd[2] = {0, 0};
-    Mean(8, mean);
+    Mean(8, mean, s_arr);
     normal.sitting_mean = mean[0];
     altered.sitting_mean = mean[1];
-    Standard_Deviation(8, mean, sd);
+    Standard_Deviation(8, mean, sd, s_arr);
     normal.sitting_standard_deviation = sd[0];
     altered.sitting_standard_deviation = sd[1];
 }
 
-void Mean(int column, float mean[])
+void Mean(int column, float mean[], float **s_arr)
 {
     int normalcount = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            mean[0] += semen_array[i][column];
+            mean[0] += s_arr[i][column];
             normalcount++;
             break;
 
         case 1: // Altered
-            mean[1] += semen_array[i][column];
+            mean[1] += s_arr[i][column];
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -603,28 +603,28 @@ void Mean(int column, float mean[])
     mean[1] /= (training_set - normalcount);
 }
 //assume mean is already calculated
-void Standard_Deviation(int column, float mean[], float sd[])
+void Standard_Deviation(int column, float mean[], float sd[], float **s_arr)
 {
     int normalcount = 0;
-    //used for temporary storage of data-mean to not alter data in semen_array
+    //used for temporary storage of data-mean to not alter data in s_arr
     float temp = 0;
     for (int i = 0; i < training_set; i++)
     {
-        switch ((int)semen_array[i][s_col - 1])
+        switch ((int)s_arr[i][s_col - 1])
         {
         case 0: // Normal
-            temp = semen_array[i][column] - mean[0];
+            temp = s_arr[i][column] - mean[0];
             sd[0] += pow(temp, 2);
             normalcount++;
             break;
 
         case 1: // Altered
-            temp = semen_array[i][column] - mean[1];
+            temp = s_arr[i][column] - mean[1];
             sd[1] += pow(temp, 2);
             break;
 
         default:
-            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry", (i + 1), (int)semen_array[i][s_col - 1]);
+            printf("\nError in line %d for Semen Diagnosis value = \"%d\" skipping entry", (i + 1), (int)s_arr[i][s_col - 1]);
             break;
         }
     }
@@ -643,11 +643,11 @@ float Gaussian_Probability(float data[], struct probability probability)
 }
 
 //returns posterior probability for altered and normal
-double Posterior_Probability(int i, struct probability probability)
+double Posterior_Probability(int i, struct probability probability, float **s_arr)
 {
     double pp;
     // Age and Sitting hours probability
-    double gp = Gaussian_Probability(semen_array[i], probability);
+    double gp = Gaussian_Probability(s_arr[i], probability);
     // Seasons probability
     pp = gp * probability.winter_probability * probability.spring_probability * probability.summer_probability * probability.fall_probability;
     // Childish Disease probability
@@ -679,7 +679,7 @@ int NB_Prediction(double pp_normal, double pp_altered)
 }
 
 //returns array with final results after making final calculations
-double **Make_Prediction(int start_count, int end_count, int size)
+double **Make_Prediction(int start_count, int end_count, int size, float **s_arr)
 {
     int count = 0;
     double error_sum = 0;
@@ -692,10 +692,10 @@ double **Make_Prediction(int start_count, int end_count, int size)
 
     for (size_t i = start_count; i < end_count; i++)
     {
-        pp_normal = Posterior_Probability(i, normal);
-        pp_altered = Posterior_Probability(i, altered);
+        pp_normal = Posterior_Probability(i, normal, s_arr);
+        pp_altered = Posterior_Probability(i, altered, s_arr);
         predicted_res = NB_Prediction(pp_normal, pp_altered);
-        real_res = semen_array[i][s_col - 1];
+        real_res = s_arr[i][s_col - 1];
 
         // check if predicted outcome = real outcome
         if (predicted_res != real_res)

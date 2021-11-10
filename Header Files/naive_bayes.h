@@ -7,7 +7,8 @@
 #define ALCOHOL_ALPHA 5;
 
 #define M_PI 3.14159265358979323846
-
+#define s_col 10 //s_col (Amount of variables for semen)
+//extern int s_row;
 extern float altered_probability, normal_probability;
 
 struct probability
@@ -37,28 +38,28 @@ extern struct probability normal;
 //assume that columns are always the same data.
 
 //setup initial probability for altered and normal | float** is a 2d array
-float Init_Probability(float **semen);
+float Init_Probability(float **semen, int s_row);
 
 //takes in array | will output probality for input data
 //float probability(float *semen, int alpha);
 
 //calculate mean for guassisan distribution | takes in which collumn to avg. 
-void Mean(int column, float mean[]);
+void Mean(int column, float mean[], float **s_arr);
 
 //calculate Std Dev for guassisan distribution | takes in which collumn to avg. 
-void Standard_Deviation(int column, float mean[], float sd[]);
+void Standard_Deviation(int column, float mean[], float sd[], float **s_arr);
 
 //calculate probability of both age and sitting and return age * probability
 float Gaussian_Probability(float data[], struct probability probability);
 
 //calculate posterior probability based on the conditional probability
-double Posterior_Probability(int i, struct probability probability);
+double Posterior_Probability(int i, struct probability probability, float **s_arr);
 
 //prediction based on conditional probability
 int NB_Prediction(double normal_p, double altered_p);
 
 //makes final calculations for a given dataset from start_count to end_count
-double** Make_Prediction(int start_count, int end_count, int size);
+double** Make_Prediction(int start_count, int end_count, int size, float **s_arr);
 
 //calculate confusion matrix values
 int *Compute_Confusion_Matrix(double **data_arr, int size);
@@ -73,23 +74,17 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
 //calculate the score for the naive bayes algo
 float Scoring();
 
-//enum class
-enum Season{winter, spring, summer, fall};
-enum Fever{less_than_three_months_ago = -1, more_than_three_months_ago, No};
-enum Alcohol_Consumption{several_times_a_day, every_day, several_times_a_week, once_a_week, hardly_ever_or_never};
-enum Smoking_Habit{never = -1, occasional, daily};
-
 //functions prototype for calculating probability
-void Prior_Probability();
-void Prob_Season();
-void Prob_Age();
-void Prob_Childish_Disease();
-void Prob_Accident();
-void Prob_Surgical_Intervention();
-void Prob_Fever();
-void Prob_Alcohol_Consumption();
-void Prob_Smoking();
-void Prob_Sitting();
+void Prior_Probability(float **arr, int s_row);
+void Prob_Season(float **arr);
+void Prob_Age(float **arr);
+void Prob_Childish_Disease(float **arr);
+void Prob_Accident(float **arr);
+void Prob_Surgical_Intervention(float **arr);
+void Prob_Fever(float **arr);
+void Prob_Alcohol_Consumption(float **arr);
+void Prob_Smoking(float **arr);
+void Prob_Sitting(float **arr);
 
 //prints values for debugging
 void Print_Values();
