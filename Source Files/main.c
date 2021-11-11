@@ -17,11 +17,13 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
 
 int main()
 {
-    float **semen_array; // Dynamic 2D array
-    int semen_row = 0;   // Amount of data (rows) in semen array
+    struct probability altered; // Altered probabilities struct
+    struct probability normal;  // Normal probabilities struct
+    float **semen_array;        // Dynamic 2D array of data
+    int semen_row = 0;          // Amount of data (rows) in semen array
 
     clock_t endT;
-    clock_t startT = clock();
+    clock_t startT = clock(); // Starts timer
     int *training_cm_arr;
     int *testing_cm_arr;
     double **training_res;
@@ -32,31 +34,31 @@ int main()
     char *xlabel = "Data No.";
     int err_col = 4;
 
-    semen_array = InitFile(&semen_row);          // Read data from file and store in array
-    Init_Probability(semen_array, TRAINING_SET); // Init Probabilities base on training size
+    semen_array = InitFile(&semen_row);                             // Read data from file and store in array
+    Init_Probability(semen_array, TRAINING_SET, &altered, &normal); // Init Probabilities base on training size
 
     // Training Set
     printf("\nConfusion Matrix Table:\n");
-    training_res = Make_Prediction(0, TRAINING_SET, TRAINING_SET, semen_array); // Init prediction result for training set
-    training_cm_arr = Compute_Confusion_Matrix(training_res, TRAINING_SET);     // Init confusion matrix results
-    Plot_Graph(0, title1, ylabel, xlabel, TRAINING_SET, training_res, err_col); // Plots error probability graph
-    Print_CM_Table(title1, training_cm_arr);                                    // Prints confusion matrix table
+    training_res = Make_Prediction(0, TRAINING_SET, TRAINING_SET, semen_array, &altered, &normal); // Init prediction result for training set
+    training_cm_arr = Compute_Confusion_Matrix(training_res, TRAINING_SET);                        // Init confusion matrix results
+    Plot_Graph(0, title1, ylabel, xlabel, TRAINING_SET, training_res, err_col);                    // Plots error probability graph
+    Print_CM_Table(title1, training_cm_arr);                                                       // Prints confusion matrix table & accuracy
 
     // Free up malloc arrays
     free(*training_res);
     free(training_res);
 
     // Testing Set
-    testing_res = Make_Prediction(TRAINING_SET, semen_row, TESTING_SET, semen_array); // Init prediction result for testing set
-    testing_cm_arr = Compute_Confusion_Matrix(testing_res, TESTING_SET);
-    Plot_Graph(1, title2, ylabel, xlabel, TESTING_SET, testing_res, err_col);
-    Print_CM_Table(title2, testing_cm_arr);
+    testing_res = Make_Prediction(TRAINING_SET, semen_row, TESTING_SET, semen_array, &altered, &normal); // Init prediction result for testing set
+    testing_cm_arr = Compute_Confusion_Matrix(testing_res, TESTING_SET);                                 // Init confusion matrix results
+    Plot_Graph(1, title2, ylabel, xlabel, TESTING_SET, testing_res, err_col);                            // Plots error probability graph
+    Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
 
     // Free up malloc arrays
     free(*testing_res);
     free(testing_res);
 
-    endT = clock();
+    endT = clock(); // Stops timer
     printf("\nElapsed Time: %f seconds\n", (double)(endT - startT) / CLOCKS_PER_SEC);
 
     return 0;

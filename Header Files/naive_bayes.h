@@ -3,19 +3,19 @@
 #define NAIVE_BAYES_H
 #define SEASON_ALPHA 4;
 #define D_T_S_ALPHA 2; //Disease, Accident, Surgery aplhas
-#define F_S_ALPHA 3; //Fever, Smoking aplhas
+#define F_S_ALPHA 3;   //Fever, Smoking aplhas
 #define ALCOHOL_ALPHA 5;
 
 #define M_PI 3.14159265358979323846
 #define s_col 10 //s_col (Amount of variables for semen)
 //extern int s_row;
-extern float altered_probability, normal_probability;
+//extern float altered_probability, normal_probability;
 
 struct probability
 {
-    //alpha 4 
+    //alpha 4
     float winter_probability, spring_probability, summer_probability, fall_probability;
-    //alpha 
+    //alpha
     float age_mean, age_standard_deviation;
     //alpha 2
     float disease_probability, no_disease_probability;
@@ -32,52 +32,52 @@ struct probability
     float sitting_mean, sitting_standard_deviation;
     float prior_probability;
 };
-extern struct probability altered;
-extern struct probability normal;
+//extern struct probability altered;
+//extern struct probability normal;
 
 //assume that columns are always the same data.
 
 //setup initial probability for altered and normal | float** is a 2d array
-float Init_Probability(float **semen, int s_row);
+void Init_Probability(float **semen, int s_row, struct probability *altered, struct probability *normal);
 
 //takes in array | will output probality for input data
 //float probability(float *semen, int alpha);
 
-//calculate mean for guassisan distribution | takes in which collumn to avg. 
+//calculate mean for guassisan distribution | takes in which collumn to avg.
 void Mean(int column, float mean[], float **s_arr, int s_row);
 
-//calculate Std Dev for guassisan distribution | takes in which collumn to avg. 
+//calculate Std Dev for guassisan distribution | takes in which collumn to avg.
 void Standard_Deviation(int column, float mean[], float sd[], float **s_arr, int s_row);
 
-//calculate probability of both age and sitting and return age * probability
-float Gaussian_Probability(float data[], struct probability probability);
+//calculate gaussian probability of both age and sitting and return age * probability
+float Gaussian_Probability(float data[], float age_mean, float age_standard_deviation, float sitting_mean, float sitting_standard_deviation);
 
 //calculate posterior probability based on the conditional probability
-double Posterior_Probability(int i, struct probability probability, float **s_arr);
+double Posterior_Probability(int i, struct probability *probability, float **s_arr);
 
 //prediction based on conditional probability
 int NB_Prediction(double normal_p, double altered_p);
 
 //makes final calculations for a given dataset from start_count to end_count
-double** Make_Prediction(int start_count, int end_count, int size, float **s_arr);
+double **Make_Prediction(int start_count, int end_count, int size, float **s_arr, struct probability *altered, struct probability *normal);
 
 //calculate confusion matrix values
 int *Compute_Confusion_Matrix(double **data_arr, int size);
 
-//use (results*100)/total data to get scoring 
+//use (results*100)/total data to get scoring
 //calculate the score for the naive bayes algo
 double Scoring(int tn_count, int tp_count, int total);
 
 //functions prototype for calculating probability
-void Prior_Probability(float **arr, int s_row);
-void Prob_Season(float **arr, int s_row);
-void Prob_Age(float **arr, int s_row);
-void Prob_Childish_Disease(float **arr, int s_row);
-void Prob_Accident(float **arr, int s_row);
-void Prob_Surgical_Intervention(float **arr, int s_row);
-void Prob_Fever(float **arr, int s_row);
-void Prob_Alcohol_Consumption(float **arr, int s_row);
-void Prob_Smoking(float **arr, int s_row);
-void Prob_Sitting(float **arr, int s_row);
+void Prior_Probability(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Season(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Age(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Childish_Disease(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Accident(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Surgical_Intervention(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Fever(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Alcohol_Consumption(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Smoking(float **arr, int s_row, struct probability *altered, struct probability *normal);
+void Prob_Sitting(float **arr, int s_row, struct probability *altered, struct probability *normal);
 
 #endif
