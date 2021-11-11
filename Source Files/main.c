@@ -4,21 +4,19 @@
 #include <math.h>
 #include "..\Header Files\naive_bayes.h"
 
-//location of data file
+// Location of data file
 #define FILE_NAME "fertility_Diagnosis_Data_Group5_8.txt"
-// Total data size; 100
-#define data_size 100
-// 80:20 (Training Set : Testing Set)
+// Training Set : Testing Set
 #define training_set 80
 #define testing_set 20
 
-float** InitFile(int *s_row); //reads the text file and stores into a dynamic arr, returns array and size of row
-void PrintData(float **s_arr, int line); // prints data based on the row index
+float** InitFile(int *s_row); // Reads the text file and stores into a dynamic arr, returns array and size of row
+void PrintData(float **s_arr, int line); // Prints data based on the row index
 
 int main()
 {
-    float** semen_array; //Dynamic 2D array
-    int semen_row = 0; //Amount of data (rows) in semen array
+    float** semen_array; // Dynamic 2D array
+    int semen_row = 0; // Amount of data (rows) in semen array
 
     clock_t endT;
     clock_t startT = clock();
@@ -33,7 +31,7 @@ int main()
     int err_col = 4;
 
     semen_array = InitFile(&semen_row);
-    Init_Probability(semen_array, semen_row);
+    Init_Probability(semen_array, training_set);
 
     // Training Set
     printf("\nConfusion Matrix Table:\n");
@@ -42,17 +40,17 @@ int main()
     Plot_Graph(0, title1, ylabel, xlabel, training_set, training_res, err_col); // Plots error probability graph
     Print_CM_Table(title1, training_cm_arr);                                    // Prints confusion matrix table
 
-    // free up malloc arrays
+    // Free up malloc arrays
     free(*training_res);
     free(training_res);
 
     // Testing Set
-    testing_res = Make_Prediction(training_set, data_size, testing_set, semen_array); // Init prediction result for testing set (20)
+    testing_res = Make_Prediction(training_set, semen_row, testing_set, semen_array); // Init prediction result for testing set (20)
     testing_cm_arr = Compute_Confusion_Matrix(testing_res, testing_set);
     Plot_Graph(1, title2, ylabel, xlabel, testing_set, testing_res, err_col);
     Print_CM_Table(title2, testing_cm_arr);
 
-    // free up malloc arrays
+    // Free up malloc arrays
     free(*testing_res);
     free(testing_res);
 
@@ -65,13 +63,13 @@ int main()
 // Reads the .txt file and store in a 2D array
 float** InitFile(int *s_row)
 {
-    // 2d dynamic array
+    // 2D dynamic array
     float **s_arr;
     // Pointer to the file
     FILE *fp;
-    // variable to read the content of file
+    // Variable to read the content of file
     char c;
-    // variables for semen
+    // Variables for semen
     float season_of_analysis;
     float age_of_analysis;
     int childish_disease;
