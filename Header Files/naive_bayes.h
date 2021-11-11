@@ -64,12 +64,6 @@ double** Make_Prediction(int start_count, int end_count, int size, float **s_arr
 //calculate confusion matrix values
 int *Compute_Confusion_Matrix(double **data_arr, int size);
 
-//prints confusion matrix table
-void Print_CM_Table(char *title, int *cm_arr);
-
-//plots a graph based on data given
-void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double** data_arr, int column);
-
 //use (results*100)/total data to get scoring 
 //calculate the score for the naive bayes algo
 double Scoring(int tn_count, int tp_count, int total);
@@ -85,8 +79,5 @@ void Prob_Fever(float **arr, int s_row);
 void Prob_Alcohol_Consumption(float **arr, int s_row);
 void Prob_Smoking(float **arr, int s_row);
 void Prob_Sitting(float **arr, int s_row);
-
-//prints values for debugging
-void Print_Values();
 
 #endif
