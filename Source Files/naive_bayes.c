@@ -22,7 +22,7 @@ void Init_Probability(float **semen, int s_row, struct probability *altered, str
 // calculates prior probability
 void Prior_Probability(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
-    //probability for being altered or normal
+    // probability for being altered or normal
     float altered_probability = 0;
     float normal_probability = 0;
 
@@ -41,6 +41,7 @@ void Prior_Probability(float **s_arr, int s_row, struct probability *altered, st
     normal->prior_probability = normal_probability;
 }
 
+// calculates season probability
 void Prob_Season(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = SEASON_ALPHA;
@@ -108,6 +109,7 @@ void Prob_Season(float **s_arr, int s_row, struct probability *altered, struct p
     normal->fall_probability = nprobability[3];
 }
 
+// calculates childish disease probability
 void Prob_Childish_Disease(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = D_T_S_ALPHA;
@@ -161,6 +163,7 @@ void Prob_Childish_Disease(float **s_arr, int s_row, struct probability *altered
     normal->disease_probability = nprobability[1];
 }
 
+// calculates accident probability
 void Prob_Accident(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = D_T_S_ALPHA;
@@ -214,6 +217,7 @@ void Prob_Accident(float **s_arr, int s_row, struct probability *altered, struct
     normal->trauma_probability = nprobability[1];
 }
 
+// calculates surgical intervention probability
 void Prob_Surgical_Intervention(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = D_T_S_ALPHA;
@@ -267,6 +271,7 @@ void Prob_Surgical_Intervention(float **s_arr, int s_row, struct probability *al
     normal->surgery_probability = nprobability[1];
 }
 
+// calculates fever probability
 void Prob_Fever(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = F_S_ALPHA;
@@ -328,6 +333,7 @@ void Prob_Fever(float **s_arr, int s_row, struct probability *altered, struct pr
     normal->no_fever_probability = nprobability[2];
 }
 
+// calculates alcohol probability
 void Prob_Alcohol_Consumption(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = ALCOHOL_ALPHA;
@@ -405,6 +411,7 @@ void Prob_Alcohol_Consumption(float **s_arr, int s_row, struct probability *alte
     normal->alcohol_hardly_probability = nprobability[4];
 }
 
+// calculates smoking probability
 void Prob_Smoking(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     int alpha = F_S_ALPHA;
@@ -466,6 +473,7 @@ void Prob_Smoking(float **s_arr, int s_row, struct probability *altered, struct 
     normal->smoke_daily_probability = nprobability[2];
 }
 
+// calculates age probability
 void Prob_Age(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     float mean[2] = {0, 0}, sd[2] = {0, 0};
@@ -477,6 +485,7 @@ void Prob_Age(float **s_arr, int s_row, struct probability *altered, struct prob
     altered->age_standard_deviation = sd[1];
 }
 
+// calculates sitting probability
 void Prob_Sitting(float **s_arr, int s_row, struct probability *altered, struct probability *normal)
 {
     float mean[2] = {0, 0}, sd[2] = {0, 0};
@@ -488,6 +497,7 @@ void Prob_Sitting(float **s_arr, int s_row, struct probability *altered, struct 
     altered->sitting_standard_deviation = sd[1];
 }
 
+// calculates mean
 void Mean(int column, float mean[], float **s_arr, int s_row)
 {
     int normalcount = 0;
@@ -513,7 +523,8 @@ void Mean(int column, float mean[], float **s_arr, int s_row)
     mean[0] /= normalcount;
     mean[1] /= (s_row - normalcount);
 }
-//assume mean is already calculated
+
+// calculates std dev
 void Standard_Deviation(int column, float mean[], float sd[], float **s_arr, int s_row)
 {
     int normalcount = 0;

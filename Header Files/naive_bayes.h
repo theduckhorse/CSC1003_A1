@@ -2,20 +2,20 @@
 #ifndef NAIVE_BAYES_H
 #define NAIVE_BAYES_H
 #define SEASON_ALPHA 4;
-#define D_T_S_ALPHA 2; //Disease, Accident, Surgery aplhas
-#define F_S_ALPHA 3;   //Fever, Smoking aplhas
+#define D_T_S_ALPHA 2; // Disease, Accident, Surgery aplhas
+#define F_S_ALPHA 3;   // Fever, Smoking aplhas
 #define ALCOHOL_ALPHA 5;
 
 #define M_PI 3.14159265358979323846
-#define s_col 10 //s_col (Amount of variables for semen)
-//extern int s_row;
-//extern float altered_probability, normal_probability;
+#define s_col 10 // s_col (Amount of variables for semen)
 
 struct probability
 {
+    //alpha 1
+    float prior_probability;
     //alpha 4
     float winter_probability, spring_probability, summer_probability, fall_probability;
-    //alpha
+    //alpha 2
     float age_mean, age_standard_deviation;
     //alpha 2
     float disease_probability, no_disease_probability;
@@ -29,19 +29,14 @@ struct probability
     float alcohol_several_day_probability, alcohol_everyday_probability, alcohol_several_week_probability, alcohol_once_week_probability, alcohol_hardly_probability;
     //alpha 3
     float smoke_never_probability, smoke_occasional_probability, smoke_daily_probability;
+    //alpha 2
     float sitting_mean, sitting_standard_deviation;
-    float prior_probability;
 };
-//extern struct probability altered;
-//extern struct probability normal;
 
 //assume that columns are always the same data.
 
-//setup initial probability for altered and normal | float** is a 2d array
+//setup initial probabilities for altered and normal | float** is a 2d array
 void Init_Probability(float **semen, int s_row, struct probability *altered, struct probability *normal);
-
-//takes in array | will output probality for input data
-//float probability(float *semen, int alpha);
 
 //calculate mean for guassisan distribution | takes in which collumn to avg.
 void Mean(int column, float mean[], float **s_arr, int s_row);
@@ -65,19 +60,29 @@ double **Make_Prediction(int start_count, int end_count, int size, float **s_arr
 int *Compute_Confusion_Matrix(double **data_arr, int size);
 
 //use (results*100)/total data to get scoring
-//calculate the score for the naive bayes algo
+//calculate the scoring for the naive bayes algo
 double Scoring(int tn_count, int tp_count, int total);
 
-//functions prototype for calculating probability
+// functions prototype for calculating probabilities
+// calculates prior probability
 void Prior_Probability(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates season probability
 void Prob_Season(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates age probability
 void Prob_Age(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates childish disease probability
 void Prob_Childish_Disease(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates accident probability
 void Prob_Accident(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates surrgical intervention probability
 void Prob_Surgical_Intervention(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates fever probability
 void Prob_Fever(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates alcohol consumption probability
 void Prob_Alcohol_Consumption(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates smoking probability
 void Prob_Smoking(float **arr, int s_row, struct probability *altered, struct probability *normal);
+// calculates sitting probability
 void Prob_Sitting(float **arr, int s_row, struct probability *altered, struct probability *normal);
 
 #endif
