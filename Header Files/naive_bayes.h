@@ -44,10 +44,10 @@ float Init_Probability(float **semen, int s_row);
 //float probability(float *semen, int alpha);
 
 //calculate mean for guassisan distribution | takes in which collumn to avg. 
-void Mean(int column, float mean[], float **s_arr);
+void Mean(int column, float mean[], float **s_arr, int s_row);
 
 //calculate Std Dev for guassisan distribution | takes in which collumn to avg. 
-void Standard_Deviation(int column, float mean[], float sd[], float **s_arr);
+void Standard_Deviation(int column, float mean[], float sd[], float **s_arr, int s_row);
 
 //calculate probability of both age and sitting and return age * probability
 float Gaussian_Probability(float data[], struct probability probability);
@@ -72,19 +72,19 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
 
 //use (results*100)/total data to get scoring 
 //calculate the score for the naive bayes algo
-float Scoring();
+double Scoring(int tn_count, int tp_count, int total);
 
 //functions prototype for calculating probability
 void Prior_Probability(float **arr, int s_row);
-void Prob_Season(float **arr);
-void Prob_Age(float **arr);
-void Prob_Childish_Disease(float **arr);
-void Prob_Accident(float **arr);
-void Prob_Surgical_Intervention(float **arr);
-void Prob_Fever(float **arr);
-void Prob_Alcohol_Consumption(float **arr);
-void Prob_Smoking(float **arr);
-void Prob_Sitting(float **arr);
+void Prob_Season(float **arr, int s_row);
+void Prob_Age(float **arr, int s_row);
+void Prob_Childish_Disease(float **arr, int s_row);
+void Prob_Accident(float **arr, int s_row);
+void Prob_Surgical_Intervention(float **arr, int s_row);
+void Prob_Fever(float **arr, int s_row);
+void Prob_Alcohol_Consumption(float **arr, int s_row);
+void Prob_Smoking(float **arr, int s_row);
+void Prob_Sitting(float **arr, int s_row);
 
 //prints values for debugging
 void Print_Values();
