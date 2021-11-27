@@ -14,6 +14,8 @@ float **InitFile(int *s_row);                                                   
 void PrintData(float **s_arr, int line);                                                                         // Prints data based on the row index
 void Print_CM_Table(char *title, int *cm_arr);                                                                   // Prints confusion matrix table
 void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double **data_arr, int column); // Plots a graph based on data given
+void Free_Array_float(float **arr, int row);                                                                     // Frees float 2D array
+void Free_Array_double(double **arr, int row);                                                                   // Frees double 2D array   
 
 int main()
 {
@@ -45,8 +47,7 @@ int main()
     Print_CM_Table(title1, training_cm_arr);                                                       // Prints confusion matrix table & accuracy
 
     // Free up malloc arrays
-    free(*training_res);
-    free(training_res);
+    Free_Array_double(training_res, TRAINING_SET);
 
     // Testing Set
     testing_res = Make_Prediction(TRAINING_SET, semen_row, TESTING_SET, semen_array, &altered, &normal); // Init prediction result for testing set
@@ -55,8 +56,8 @@ int main()
     Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
 
     // Free up malloc arrays
-    free(*testing_res);
-    free(testing_res);
+    Free_Array_double(testing_res, TESTING_SET);
+    Free_Array_float(semen_array, semen_row);
 
     endT = clock(); // Stops timer
     printf("\nElapsed Time: %f seconds\n", (double)(endT - startT) / CLOCKS_PER_SEC);
@@ -214,4 +215,26 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
     fprintf(gnuplot_pipe, "e\n");
     // Refresh
     fprintf(gnuplot_pipe, "refresh\n");
+}
+
+void Free_Array_float(float **arr, int row)
+{
+    for (int i=0; i< row; i++) //deallocate sub arrays first
+    {
+        free(arr[i]); //free up *arr
+        arr[i] = NULL; //dereference *array
+    }   
+    free(arr); //free up arr
+    arr = NULL; //dereference array
+}
+
+void Free_Array_double(double **arr, int row)
+{
+    for (int i=0; i< row; i++) //deallocate sub arrays first
+    {
+        free(arr[i]);   //free up *arr
+        arr[i] = NULL;  //dereference *array
+    }   
+    free(arr);  //free up arr
+    arr = NULL; //dereference array
 }
