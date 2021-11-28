@@ -59,6 +59,10 @@ int main()
     testing_err_prob_arr[0] = testing_res[testing_set - 1][err_col];                                     // Adds testing error probability to array
     printf("Testing Error Probability: %f\n", testing_err_prob_arr[0]);
 
+    // Free up malloc arrays
+    Free_Array_double(training_res, training_set);
+    Free_Array_double(testing_res, testing_set);
+
     // Training:Testing Set - 50:50
     training_set = 50;
     testing_set = 50;
@@ -78,6 +82,10 @@ int main()
     Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
     testing_err_prob_arr[1] = testing_res[testing_set - 1][err_col];                                     // Adds testing error probability to array
     printf("Testing Error Probability: %f\n", testing_err_prob_arr[1]);
+
+    // Free up malloc arrays
+    Free_Array_double(training_res, training_set);
+    Free_Array_double(testing_res, testing_set);
 
     // Training:Testing Set - 90:10
     training_set = 90;
