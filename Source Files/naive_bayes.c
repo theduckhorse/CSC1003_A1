@@ -723,7 +723,7 @@ int NB_Prediction(double pp_normal, double pp_altered)
 double **Make_Prediction(int start_count, int end_count, int size, float **s_arr, struct probability *altered, struct probability *normal)
 {
     int count = 0;
-    int columns = 5;
+    int columns = 3;
     int error_sum = 0;
     double error_probability;
     double pp_normal;
@@ -748,18 +748,14 @@ double **Make_Prediction(int start_count, int end_count, int size, float **s_arr
         error_probability = 1.f / size * error_sum;
 
         // stores predicted values into the array
-        // allocates 5 columns for the data (pp_normal, pp_altered, real_res, predicted_res, error_probability)
+        // allocates 3 columns for the data (real_res, predicted_res, error_probability)
         prediction_arr[count] = malloc(columns * sizeof(double *));
-        // adds pp_normal to array
-        prediction_arr[count][0] = pp_normal;
-        // adds pp_altered to array
-        prediction_arr[count][1] = pp_altered;
         // adds real_res to array
-        prediction_arr[count][2] = real_res;
+        prediction_arr[count][0] = real_res;
         // adds predicted_res to array
-        prediction_arr[count][3] = predicted_res;
+        prediction_arr[count][1] = predicted_res;
         // adds error_probability to array
-        prediction_arr[count][4] = error_probability;
+        prediction_arr[count][2] = error_probability;
 
         count++;
     }
@@ -774,8 +770,8 @@ int *Compute_Confusion_Matrix(double **data_arr, int size)
     static int cm_arr[4];
     int real_res;
     int predicted_res;
-    int real_res_col = 2;
-    int pred_res_col = 3;
+    int real_res_col = 0;
+    int pred_res_col = 1;
 
     for (size_t i = 0; i < size; i++)
     {

@@ -26,13 +26,13 @@ int main()
     int *testing_cm_arr;
     double **training_res;
     double **testing_res;
-    double training_err_prob_arr[3];
-    double testing_err_prob_arr[3];
+    static double training_err_prob_arr[3];
+    static double testing_err_prob_arr[3];
     char *title1 = "Training Set";
     char *title2 = "Testing Set";
     char *ylabel = "Error Probability";
     char *xlabel = "Training:Testing Set";
-    int err_col = 4;
+    int err_col = 2;
     int num_col = 3;
     int training_set = 80;
     int testing_set = 20;
