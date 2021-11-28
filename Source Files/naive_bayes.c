@@ -724,7 +724,7 @@ double **Make_Prediction(int start_count, int end_count, int size, float **s_arr
 {
     int count = 0;
     int columns = 5;
-    double error_sum = 0;
+    int error_sum = 0;
     double error_probability;
     double pp_normal;
     double pp_altered;
@@ -745,7 +745,7 @@ double **Make_Prediction(int start_count, int end_count, int size, float **s_arr
             error_sum++;
         }
         // calculates probability of error
-        error_probability = 1.0 / end_count * error_sum;
+        error_probability = 1.f / size * error_sum;
 
         // stores predicted values into the array
         // allocates 5 columns for the data (pp_normal, pp_altered, real_res, predicted_res, error_probability)
