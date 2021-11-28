@@ -6,58 +6,107 @@
 
 // Location of data file
 #define FILE_NAME "fertility_Diagnosis_Data_Group5_8.txt"
-// Training Set : Testing Set
-#define TRAINING_SET 80
-#define TESTING_SET 20
 
-float **InitFile(int *s_row);                                                                                    // Reads the text file and stores into a dynamic arr, returns array and size of row
-void PrintData(float **s_arr, int line);                                                                         // Prints data based on the row index
-void Print_CM_Table(char *title, int *cm_arr);                                                                   // Prints confusion matrix table
-void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double **data_arr, int column); // Plots a graph based on data given
-void Free_Array_float(float **arr, int row);                                                                     // Frees float 2D array
-void Free_Array_double(double **arr, int row);                                                                   // Frees double 2D array   
+float **InitFile(int *s_row);                                                                                                          // Reads the text file and stores into a dynamic arr, returns array and size of row
+void PrintData(float **s_arr, int line);                                                                                               // Prints data based on the row index
+void Print_CM_Table(char *title, int *cm_arr);                                                                                         // Prints confusion matrix table
+void Plot_Graph(int terminal, char *title, char *dtitle, char *ylabel, char *xlabel, int size, double ydata_arr[], char *xdata_arr[]); // Plots a graph based on data given
+void Free_Array_float(float **arr, int row);                                                                                           // Frees float 2D array
+void Free_Array_double(double **arr, int row);                                                                                         // Frees double 2D array
 
 int main()
 {
+    clock_t endT;
+    clock_t startT = clock();   // Starts timer
     struct probability altered; // Altered probabilities struct
     struct probability normal;  // Normal probabilities struct
     float **semen_array;        // Dynamic 2D array of data
     int semen_row = 0;          // Amount of data (rows) in semen array
-
-    clock_t endT;
-    clock_t startT = clock(); // Starts timer
     int *training_cm_arr;
     int *testing_cm_arr;
     double **training_res;
     double **testing_res;
+    double training_err_prob_arr[3];
+    double testing_err_prob_arr[3];
     char *title1 = "Training Set";
     char *title2 = "Testing Set";
     char *ylabel = "Error Probability";
-    char *xlabel = "Data No.";
+    char *xlabel = "Training:Testing Set";
     int err_col = 4;
+    int num_col = 3;
+    int training_set = 80;
+    int testing_set = 20;
+    char *dtitle = "Error Probability";
+    char *xdata_arr[] = {"80:20", "50:50", "90:10"};
 
-    semen_array = InitFile(&semen_row);                             // Read data from file and store in array
-    Init_Probability(semen_array, TRAINING_SET, &altered, &normal); // Init Probabilities base on training size
+    semen_array = InitFile(&semen_row); // Read data from file and store in array
 
+    // Training:Testing Set - 80:20
     // Training Set
-    printf("\nConfusion Matrix Table:\n");
-    training_res = Make_Prediction(0, TRAINING_SET, TRAINING_SET, semen_array, &altered, &normal); // Init prediction result for training set
-    training_cm_arr = Compute_Confusion_Matrix(training_res, TRAINING_SET);                        // Init confusion matrix results
-    Plot_Graph(0, title1, ylabel, xlabel, TRAINING_SET, training_res, err_col);                    // Plots error probability graph
+    printf("\nTraining:Testing - %d:%d\n", training_set, testing_set);
+    printf("Confusion Matrix Table:\n");
+    Init_Probability(semen_array, training_set, &altered, &normal);                                // Init Probabilities base on training size
+    training_res = Make_Prediction(0, training_set, training_set, semen_array, &altered, &normal); // Init prediction result for training set
+    training_cm_arr = Compute_Confusion_Matrix(training_res, training_set);                        // Init confusion matrix results
     Print_CM_Table(title1, training_cm_arr);                                                       // Prints confusion matrix table & accuracy
-
-    // Free up malloc arrays
-    Free_Array_double(training_res, TRAINING_SET);
+    training_err_prob_arr[0] = training_res[training_set - 1][err_col];                            // Adds training error probability to array
+    printf("Training Error Probability: %f\n", training_err_prob_arr[0]);
 
     // Testing Set
-    testing_res = Make_Prediction(TRAINING_SET, semen_row, TESTING_SET, semen_array, &altered, &normal); // Init prediction result for testing set
-    testing_cm_arr = Compute_Confusion_Matrix(testing_res, TESTING_SET);                                 // Init confusion matrix results
-    Plot_Graph(1, title2, ylabel, xlabel, TESTING_SET, testing_res, err_col);                            // Plots error probability graph
+    testing_res = Make_Prediction(training_set, semen_row, testing_set, semen_array, &altered, &normal); // Init prediction result for testing set
+    testing_cm_arr = Compute_Confusion_Matrix(testing_res, testing_set);                                 // Init confusion matrix results
     Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
+    testing_err_prob_arr[0] = testing_res[testing_set - 1][err_col];                                     // Adds testing error probability to array
+    printf("Testing Error Probability: %f\n", testing_err_prob_arr[0]);
+
+    // Training:Testing Set - 50:50
+    training_set = 50;
+    testing_set = 50;
+    // Training Set
+    printf("\nTraining:Testing - %d:%d\n", training_set, testing_set);
+    printf("Confusion Matrix Table:\n");
+    Init_Probability(semen_array, training_set, &altered, &normal);                                // Init Probabilities base on training size
+    training_res = Make_Prediction(0, training_set, training_set, semen_array, &altered, &normal); // Init prediction result for training set
+    training_cm_arr = Compute_Confusion_Matrix(training_res, training_set);                        // Init confusion matrix results
+    Print_CM_Table(title1, training_cm_arr);                                                       // Prints confusion matrix table & accuracy
+    training_err_prob_arr[1] = training_res[training_set - 1][err_col];                            // Adds training error probability to array
+    printf("Training Error Probability: %f\n", training_err_prob_arr[1]);
+
+    // Testing Set
+    testing_res = Make_Prediction(training_set, semen_row, testing_set, semen_array, &altered, &normal); // Init prediction result for testing set
+    testing_cm_arr = Compute_Confusion_Matrix(testing_res, testing_set);                                 // Init confusion matrix results
+    Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
+    testing_err_prob_arr[1] = testing_res[testing_set - 1][err_col];                                     // Adds testing error probability to array
+    printf("Testing Error Probability: %f\n", testing_err_prob_arr[1]);
+
+    // Training:Testing Set - 90:10
+    training_set = 90;
+    testing_set = 10;
+    // Training Set
+    printf("\nTraining:Testing - %d:%d\n", training_set, testing_set);
+    printf("Confusion Matrix Table:\n");
+    Init_Probability(semen_array, training_set, &altered, &normal);                                // Init Probabilities base on training size
+    training_res = Make_Prediction(0, training_set, training_set, semen_array, &altered, &normal); // Init prediction result for training set
+    training_cm_arr = Compute_Confusion_Matrix(training_res, training_set);                        // Init confusion matrix results
+    Print_CM_Table(title1, training_cm_arr);                                                       // Prints confusion matrix table & accuracy
+    training_err_prob_arr[2] = training_res[training_set - 1][err_col];                            // Adds training error probability to array
+    printf("Training Error Probability: %f\n", training_err_prob_arr[2]);
+
+    // Testing Set
+    testing_res = Make_Prediction(training_set, semen_row, testing_set, semen_array, &altered, &normal); // Init prediction result for testing set
+    testing_cm_arr = Compute_Confusion_Matrix(testing_res, testing_set);                                 // Init confusion matrix results
+    Print_CM_Table(title2, testing_cm_arr);                                                              // Prints confusion matrix table & accuracy
+    testing_err_prob_arr[2] = testing_res[testing_set - 1][err_col];                                     // Adds testing error probability to array
+    printf("Testing Error Probability: %f\n", testing_err_prob_arr[2]);
 
     // Free up malloc arrays
-    Free_Array_double(testing_res, TESTING_SET);
+    Free_Array_double(training_res, training_set);
+    Free_Array_double(testing_res, testing_set);
     Free_Array_float(semen_array, semen_row);
+
+    // Plots Graph
+    Plot_Graph(0, title1, dtitle, ylabel, xlabel, num_col, training_err_prob_arr, xdata_arr); // Plots Training error probability graph
+    Plot_Graph(1, title2, dtitle, ylabel, xlabel, num_col, testing_err_prob_arr, xdata_arr);  // Plots Testing error probability graph
 
     endT = clock(); // Stops timer
     printf("\nElapsed Time: %f seconds\n", (double)(endT - startT) / CLOCKS_PER_SEC);
@@ -190,11 +239,10 @@ void Print_CM_Table(char *title, int *cm_arr)
     printf("%-25s%-25d%-10d\n", "Actual: Normal", tn_count, fp_count);
     printf("%-25s%-25d%-10d\n", "Actual: Altered", fn_count, tp_count);
     printf("Accuracy: %1.2lf%%\n", score);
-    printf("\n");
 }
 
 // Plots a graph
-void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size, double **data_arr, int column)
+void Plot_Graph(int terminal, char *title, char *dtitle, char *ylabel, char *xlabel, int size, double ydata_arr[], char *xdata_arr[])
 {
     // Open persistent gnuplot window
     FILE *gnuplot_pipe = popen("gnuplot -persistent", "w");
@@ -207,10 +255,10 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
     fprintf(gnuplot_pipe, "set style line 1 linecolor rgb '#0060ad' ");
     fprintf(gnuplot_pipe, "linetype 1 linewidth 1 pointtype 7 pointsize 1\n");
     // Fill it with data
-    fprintf(gnuplot_pipe, "plot '-' with linespoints linestyle 1\n");
+    fprintf(gnuplot_pipe, "plot '-' using 2:xtic(1) title '%s' with linespoints linestyle 1\n", dtitle);
     for (size_t i = 0; i < size; ++i)
     {
-        fprintf(gnuplot_pipe, "%zu %f\n", i, data_arr[i][column]);
+        fprintf(gnuplot_pipe, "%s %f\n", xdata_arr[i], ydata_arr[i]);
     }
     fprintf(gnuplot_pipe, "e\n");
     // Refresh
@@ -219,22 +267,22 @@ void Plot_Graph(int terminal, char *title, char *ylabel, char *xlabel, int size,
 
 void Free_Array_float(float **arr, int row)
 {
-    for (int i=0; i< row; i++) //deallocate sub arrays first
+    for (int i = 0; i < row; i++) //deallocate sub arrays first
     {
-        free(arr[i]); //free up *arr
+        free(arr[i]);  //free up *arr
         arr[i] = NULL; //dereference *array
-    }   
-    free(arr); //free up arr
+    }
+    free(arr);  //free up arr
     arr = NULL; //dereference array
 }
 
 void Free_Array_double(double **arr, int row)
 {
-    for (int i=0; i< row; i++) //deallocate sub arrays first
+    for (int i = 0; i < row; i++) //deallocate sub arrays first
     {
-        free(arr[i]);   //free up *arr
-        arr[i] = NULL;  //dereference *array
-    }   
+        free(arr[i]);  //free up *arr
+        arr[i] = NULL; //dereference *array
+    }
     free(arr);  //free up arr
     arr = NULL; //dereference array
 }
